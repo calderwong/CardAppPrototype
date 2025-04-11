@@ -13,7 +13,7 @@ This application is built primarily for demonstration and development purposes, 
 The primary goal of this prototype was to execute a rapid development cycle, simulating what could be achieved in approximately one working day (April 10, 2025) from concept to a demonstrable application. This involved a compressed timeline across product definition, design, development, and deployment:
 
 *   **10:00 AM - 11:00 AM:**
-    *   Competitive research & analysis.
+    *   Competitive research & analysis ([CardApp_Research.md](./src/ReferenceDocs/CardApp_Research.md)).
     *   Feature brainstorming relevant to the card management use case.
     *   Drafting initial [Product Requirements](./src/ReferenceDocs/CardApp_ProductRequirementDoc.md).
     *   Creating a basic [Design Brief](./src/ReferenceDocs/CardApp_DesignBrief.md).
@@ -143,6 +143,7 @@ c:/Users/cjwon/CardAppExample/
 ├── README.md           # This file
 ├── tailwind.config.js  # Tailwind CSS configuration
 └── vite.config.js      # Vite configuration
+```
 
 ## Future Enhancements (Production Readiness)
 
