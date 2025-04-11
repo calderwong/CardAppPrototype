@@ -41,6 +41,17 @@ function CardDetailPage({ cards, setCards }) {
   const viewMode = useContext(ViewModeContext); // Access the view mode context
   const isMobile = viewMode === 'mobile'; // Create a helper flag
 
+  // Helper function to format dates consistently
+  const formatDate = (dateStr) => {
+    if (!dateStr) return 'N/A';
+    try {
+      return format(new Date(dateStr), 'MMM d, yyyy');
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return dateStr; // Return the original string if formatting fails
+    }
+  };
+
   // Ref for scrolling to the full payment section
   const paymentSectionRef = useRef(null);
 
@@ -92,6 +103,35 @@ function CardDetailPage({ cards, setCards }) {
       .filter(t => t.cardId === cardData.id && t.status === 'Completed')
       .reduce((sum, transaction) => sum + (transaction.amount * cardData.rewardsRate), 0);
   }, [cardData]); // Recalculate only when cardData changes
+
+  // Helper function to format currency consistently
+  const formatCurrency = (amount) => {
+    if (amount === undefined || amount === null) return '$0.00';
+    return `$${Number(amount).toFixed(2)}`;
+  };
+
+  // Simplified property access helper to avoid errors
+  const getCardProperty = (property, defaultValue = null) => {
+    if (!cardData) return defaultValue;
+    
+    // Handle nested properties like 'scheduledPayment.amount'
+    if (property.includes('.')) {
+      const parts = property.split('.');
+      let current = cardData;
+      
+      for (const part of parts) {
+        if (current === undefined || current === null || current[part] === undefined) {
+          return defaultValue;
+        }
+        current = current[part];
+      }
+      
+      return current;
+    }
+    
+    // Simple property access
+    return cardData[property] !== undefined ? cardData[property] : defaultValue;
+  };
 
   // --- Effect to Sync State with cardData (useEffect AFTER useMemo and useState) ---
   useEffect(() => {
@@ -222,8 +262,8 @@ function CardDetailPage({ cards, setCards }) {
 
   // Helper to format dates nicely
   const formatDateRange = (start, end) => {
-    const startDate = format(start, 'MMM d, yyyy');
-    const endDate = end ? format(end, 'MMM d, yyyy') : 'Ongoing'; // Handle open-ended trips
+    const startDate = formatDate(start);
+    const endDate = end ? formatDate(end) : 'Ongoing'; // Handle open-ended trips
     return `${startDate} - ${endDate}`;
   };
 
@@ -246,28 +286,6 @@ function CardDetailPage({ cards, setCards }) {
     });
   };
 
-  // --- Helper Functions ---
-  const formatCurrency = (amount) => {
-    // Added check for valid number
-    if (typeof amount !== 'number' || isNaN(amount)) {
-      return '$--.--'; // Or some other placeholder
-    }
-    return amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
-    try {
-      const options = { year: 'numeric', month: 'short', day: 'numeric' };
-      // Ensure dateString is treated as UTC if only date part is provided
-      const date = new Date(dateString.includes('T') ? dateString : dateString + 'T00:00:00');
-      return date.toLocaleDateString('en-US', options);
-    } catch (e) {
-      console.error("Error formatting date:", dateString, e);
-      return 'Invalid Date';
-    }
-  };
-
   // --- Update Card Data Helper ---
   const updateCardData = (updatedFields) => {
     setCards(prevCards =>
@@ -285,12 +303,12 @@ function CardDetailPage({ cards, setCards }) {
         return;
     }
     const amountToPay = paymentTypeToSchedule === 'Minimum'
-      ? cardData.minPayment
-      : cardData.statementBalance;
+      ? getCardProperty('minPayment', 0)
+      : getCardProperty('statementBalance', 0);
 
     updateCardData({
       scheduledPayment: {
-        date: cardData.dueDate, // Schedule for the due date
+        date: getCardProperty('dueDate'), // Schedule for the due date
         amount: amountToPay,
         type: paymentTypeToSchedule,
         accountId: selectedPaymentAccount // Store the selected account ID
@@ -299,7 +317,7 @@ function CardDetailPage({ cards, setCards }) {
     setShowPaymentSuccess(true); // Show success message
     setTimeout(() => setShowPaymentSuccess(false), 3000); // Hide after 3s
 
-    console.log(`Scheduled ${paymentTypeToSchedule} payment of ${formatCurrency(amountToPay)} for ${formatDate(cardData.dueDate)} from account ${selectedPaymentAccount}`);
+    console.log(`Scheduled ${paymentTypeToSchedule} payment of ${formatCurrency(amountToPay)} for ${formatDate(getCardProperty('dueDate'))} from account ${selectedPaymentAccount}`);
   };
 
   const handleCancelScheduledPayment = () => {
@@ -325,7 +343,7 @@ function CardDetailPage({ cards, setCards }) {
   const handleAutoPayTypeChange = (type) => {
     setAutoPaySelection(type);
     // Only update card data if autopay is already enabled
-    if (cardData.autoPayEnabled) {
+    if (getCardProperty('autoPayEnabled', false)) {
       updateCardData({ autoPayType: type });
       console.log(`Autopay type set to: ${type}`);
     }
@@ -335,7 +353,7 @@ function CardDetailPage({ cards, setCards }) {
   const handleAutopayAccountChange = (accountId) => {
     setSelectedAutopayAccount(accountId);
      // If autopay is currently enabled, update the card data immediately
-    if (cardData.autoPayEnabled) {
+    if (getCardProperty('autoPayEnabled', false)) {
        updateCardData({ autoPayAccountId: accountId });
        console.log(`Autopay account updated to: ${accountId}`);
     }
@@ -381,7 +399,7 @@ function CardDetailPage({ cards, setCards }) {
     }]);
     
     // Update console for demo purposes
-    console.log(`Successfully added card ending in ${cardData.last4} to ${walletType}.`);
+    console.log(`Successfully added card ending in ${getCardProperty('last4')} to ${walletType}.`);
   };
 
   const cardTransactions = useMemo(() => {
@@ -413,13 +431,13 @@ function CardDetailPage({ cards, setCards }) {
   // --- Rewards Withdrawal Handler (Updated) ---
   const handleWithdrawConfirm = () => {
     // 1. Guard Clause & Get Data
-    if (!cardData || cardData.rewardsBalance <= 0 || !selectedWithdrawalAccount) {
+    if (!cardData || getCardProperty('rewardsBalance', 0) <= 0 || !selectedWithdrawalAccount) {
       console.error("Withdrawal conditions not met.");
       setShowWithdrawModal(false); // Close modal even on error
       return;
     }
 
-    const withdrawalAmount = cardData.rewardsBalance;
+    const withdrawalAmount = getCardProperty('rewardsBalance', 0);
     const destinationAccount = mockBankAccounts.find(acc => acc.id === selectedWithdrawalAccount);
 
     if (!destinationAccount) {
@@ -486,7 +504,7 @@ function CardDetailPage({ cards, setCards }) {
         <div className="bg-white p-6 lg:p-8 rounded-lg shadow-md border border-green-500">
           <h2 className="text-xl lg:text-2xl font-semibold text-green-700 mb-4">Report Submitted Successfully</h2>
           <p className="text-lg lg:text-xl text-neutral-dark mb-3">
-            Your card ending in {cardData.last4} has been reported as <strong>{reportType === 'lost' ? 'Lost' : 'Stolen'}</strong>.
+            Your card ending in {getCardProperty('last4')} has been reported as <strong>{reportType === 'lost' ? 'Lost' : 'Stolen'}</strong>.
             {reportSubmitted && reportType === 'stolen' && disputeCount > 0 &&
               ` ${disputeCount} transaction${disputeCount > 1 ? 's are' : ' is'} being disputed.`
             }
@@ -519,18 +537,18 @@ function CardDetailPage({ cards, setCards }) {
                 <Card cardData={cardData} />
               </div>
               
-              {cardData.accountType === 'Credit' && (
+              {getCardProperty('accountType') === 'Credit' && (
                 <div className="bg-white p-4 rounded-lg shadow-lg mb-6 border border-neutral-200">
                   <h4 className="text-md font-semibold text-neutral-darker mb-3">Payment Summary</h4>
                   <div className="space-y-2 text-xs sm:text-sm mb-4">
                     <div className="flex justify-between">
                       <span className="text-neutral-dark">Card Holder</span>
-                      <span className="font-medium text-neutral-darker">{cardData.cardHolder}</span>
+                      <span className="font-medium text-neutral-darker">{getCardProperty('cardHolder')}</span>
                     </div>
                     <div className="flex justify-between items-start">
                       <span className="text-neutral-dark pt-1">Card Number</span>
                       <div className="text-right">
-                        <p className="text-md font-mono text-neutral-darker">{cardData.fullCardNumber ? formatCardNumber(cardData.fullCardNumber) : '**** **** **** ' + cardData.last4}</p>
+                        <p className="text-md font-mono text-neutral-darker">{getCardProperty('fullCardNumber') ? formatCardNumber(getCardProperty('fullCardNumber')) : '**** **** **** ' + getCardProperty('last4')}</p>
                       </div>
                     </div>
                   </div>
@@ -571,7 +589,7 @@ function CardDetailPage({ cards, setCards }) {
                 />
               </div>
               
-              {cardData.rewardsRate > 0 && (
+              {getCardProperty('rewardsRate', 0) > 0 && (
                 <div className="mb-6">
                   <RewardsSummaryWidget
                     cardData={cardData}
@@ -608,17 +626,17 @@ function CardDetailPage({ cards, setCards }) {
                   </div>
                   
                   {/* Quick Access Panel */}
-                  {cardData.accountType === 'Credit' && (
+                  {getCardProperty('accountType') === 'Credit' && (
                     <div className="bg-white p-4 rounded-xl shadow-md border border-neutral-200 mb-4">
                       <h4 className="text-md font-semibold text-neutral-darker mb-2">Quick Access</h4>
                       <div className="space-y-1 text-xs mb-3">
                         <div className="flex justify-between">
                           <span className="text-neutral-dark">Card Holder</span>
-                          <span className="font-medium text-neutral-darker">{cardData.cardHolder}</span>
+                          <span className="font-medium text-neutral-darker">{getCardProperty('cardHolder')}</span>
                         </div>
                         <div className="flex justify-between items-start">
                           <span className="text-neutral-dark">Card Number</span>
-                          <span className="font-mono text-neutral-darker">{cardData.last4}</span>
+                          <span className="font-mono text-neutral-darker">{getCardProperty('last4')}</span>
                         </div>
                       </div>
                       <button
@@ -673,7 +691,7 @@ function CardDetailPage({ cards, setCards }) {
                     </div>
                     
                     {/* Rewards Summary (if applicable) - Responsive column sizing */}
-                    {cardData.rewardsRate > 0 && (
+                    {getCardProperty('rewardsRate', 0) > 0 && (
                       <div className="lg:col-span-1">
                         <RewardsSummaryWidget
                           cardData={cardData}
@@ -707,11 +725,11 @@ function CardDetailPage({ cards, setCards }) {
           {/* Transaction List - Full width for both views */}
           <CardTransactionListWidget
             transactions={cardTransactions}
-            rewardsRate={cardData?.rewardsRate}
+            rewardsRate={getCardProperty('rewardsRate', 0)}
           />
 
           {/* Credit Card Payment Section - Full width for both views */}
-          {cardData.accountType === 'Credit' && (
+          {getCardProperty('accountType') === 'Credit' && (
             <div ref={paymentSectionRef} className="bg-white p-4 md:p-6 lg:p-8 rounded-lg shadow-lg mt-6 md:mt-8 lg:mt-10 border border-neutral-200">
               {/* Heading Adjusted */}
               <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold text-neutral-darker mb-4 md:mb-6">Credit Card Payments</h3>
@@ -719,41 +737,41 @@ function CardDetailPage({ cards, setCards }) {
               {/* Payment Summary Recap - Uses LabelValueDisplay (already sized) */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 lg:gap-6 mb-4 lg:mb-6 p-3 md:p-4 lg:p-6 bg-neutral-lightest rounded-md border border-neutral-light">
                 <LabelValueDisplay
-                  label="Payment Due"
+                  label="Minimum Payment"
                   valueSlot={
-                    <span className="text-lg lg:text-2xl font-semibold text-neutral-darker">{formatDate(cardData.dueDate)}</span>
+                    <span className="text-lg lg:text-2xl font-semibold text-red-700">{formatCurrency(getCardProperty('minPayment', 0))}</span>
                   }
-                  labelSize="text-[10px] sm:text-xs" // Extra small label for this compact area
+                  labelSize="text-[10px] sm:text-xs" // Extra small label
                   className="flex flex-col items-start"
                   labelSlot={<CalendarDaysIcon className="h-3 w-3 sm:h-4 mr-1 text-primary inline-block mb-0.5" />}
                 />
                 <LabelValueDisplay
-                  label="Minimum Payment"
-                  valueSlot={
-                    <span className="text-lg lg:text-2xl font-semibold text-red-700">${cardData.minPaymentAmount?.toFixed(2) || '0.00'}</span>
-                  }
-                  labelSize="text-[10px] sm:text-xs" // Extra small label
-                  className="flex flex-col items-start"
-                  labelSlot={<CurrencyDollarIcon className="h-3 w-3 sm:h-4 mr-1 text-red-600 inline-block mb-0.5" />}
-                />
-                <LabelValueDisplay
                   label="Statement Balance"
                   valueSlot={
-                    <span className="text-lg lg:text-2xl font-semibold text-blue-700">${cardData.statementBalanceAmount?.toFixed(2) || '0.00'}</span>
+                    <span className="text-lg lg:text-2xl font-semibold text-blue-700">{formatCurrency(getCardProperty('statementBalance', 0))}</span>
                   }
                   labelSize="text-[10px] sm:text-xs" // Extra small label
                   className="flex flex-col items-start"
                   labelSlot={<ReceiptPercentIcon className="h-3 w-3 sm:h-4 mr-1 text-blue-600 inline-block mb-0.5" />}
                 />
+                <LabelValueDisplay
+                  label="Payment Due"
+                  valueSlot={
+                    <span className="text-lg lg:text-2xl font-semibold text-neutral-darker">{formatDate(getCardProperty('dueDate'))}</span>
+                  }
+                  labelSize="text-[10px] sm:text-xs" // Extra small label
+                  className="flex flex-col items-start"
+                  labelSlot={<CurrencyDollarIcon className="h-3 w-3 sm:h-4 mr-1 text-red-600 inline-block mb-0.5" />}
+                />
               </div> {/* Correct closing tag for the grid div */}
 
               {/* Scheduled Payment Info - Adjusted Sizes */}
-              {cardData.scheduledPayment ? (
+              {getCardProperty('scheduledPayment') ? (
                 <div className="mb-6 lg:mb-8 p-3 md:p-4 bg-blue-50 border border-blue-200 rounded-md text-[11px] sm:text-xs lg:text-sm text-blue-700 flex flex-col sm:flex-row justify-between items-start sm:items-center">
                   <div>
-                    <p><span className="font-semibold">Payment Scheduled:</span> ${cardData.scheduledPayment.amount?.toFixed(2) || '0.00'} ({cardData.scheduledPayment.type})</p>
-                    <p>Scheduled Date: {formatDate(cardData.scheduledPayment.date)}</p>
-                    <p>From Account: ...{mockBankAccounts.find(acc => acc.id === cardData.scheduledPayment.accountId)?.accountNumber.slice(-4) || 'N/A'}</p>
+                    <p><span className="font-semibold">Payment Scheduled:</span> {formatCurrency(getCardProperty('scheduledPayment.amount', 0))} ({getCardProperty('scheduledPayment.type')})</p>
+                    <p>Scheduled Date: {formatDate(getCardProperty('scheduledPayment.date'))}</p>
+                    <p>From Account: ...{mockBankAccounts.find(acc => acc.id === getCardProperty('scheduledPayment.accountId'))?.accountNumber.slice(-4) || 'N/A'}</p>
                   </div>
                   <button onClick={handleCancelScheduledPayment} className="mt-2 sm:mt-0 text-red-600 hover:text-red-800 underline text-[11px] sm:text-xs font-medium self-start sm:self-center">
                     Cancel Payment
@@ -770,12 +788,12 @@ function CardDetailPage({ cards, setCards }) {
               )}
 
               {/* Make Payment / Schedule Payment Section - Adjusted Sizes */}
-              {!cardData.scheduledPayment && !showPaymentSuccess && ( // Hide section if payment was just scheduled
+              {!getCardProperty('scheduledPayment') && !showPaymentSuccess && ( // Hide section if payment was just scheduled
                 <div className="mb-6 lg:mb-8 p-4 md:p-6 border border-neutral-200 rounded-md">
                   {/* Heading Adjusted */}
                   <h4 className="text-md sm:text-lg font-semibold text-neutral-darker mb-3 md:mb-4">Schedule a Payment</h4>
                   {/* Paragraph Adjusted */}
-                  <p className="text-sm sm:text-base text-neutral-dark mb-3 md:mb-4">Select amount to pay by {formatDate(cardData.dueDate)}:</p>
+                  <p className="text-sm sm:text-base text-neutral-dark mb-3 md:mb-4">Select amount to pay by {formatDate(getCardProperty('dueDate'))}:</p>
                   <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-6 mb-4 lg:mb-6">
                     {/* Radio Option 1: Minimum Payment - Label Adjusted */}
                     <label className="inline-flex items-center space-x-2 cursor-pointer">
@@ -788,7 +806,7 @@ function CardDetailPage({ cards, setCards }) {
                         className="form-radio h-3 w-3 sm:h-4 text-primary focus:ring-primary border-neutral-300"
                       />
                       <span className="text-[11px] sm:text-xs lg:text-sm">
-                        Minimum: <span className="font-semibold">${cardData.minPaymentAmount?.toFixed(2) || '0.00'}</span>
+                        Minimum: <span className="font-semibold">{formatCurrency(getCardProperty('minPayment', 0))}</span>
                       </span>
                     </label>
                     {/* Radio Option 2: Statement Balance - Label Adjusted */}
@@ -802,7 +820,7 @@ function CardDetailPage({ cards, setCards }) {
                         className="form-radio h-3 w-3 sm:h-4 text-primary focus:ring-primary border-neutral-300"
                       />
                       <span className="text-[11px] sm:text-xs lg:text-sm">
-                        Statement Balance: <span className="font-semibold">${cardData.statementBalanceAmount?.toFixed(2) || '0.00'}</span>
+                        Statement Balance: <span className="font-semibold">{formatCurrency(getCardProperty('statementBalance', 0))}</span>
                       </span>
                     </label>
                     {/* TODO: Add 'Other Amount' option later */}
@@ -846,18 +864,18 @@ function CardDetailPage({ cards, setCards }) {
                   <h4 className="text-md sm:text-lg font-semibold text-neutral-darker mb-2 sm:mb-0">Automatic Payments</h4>
                   <div className="flex items-center space-x-3">
                     {/* Status Indicator Adjusted */}
-                    <span className={`text-[10px] sm:text-xs font-medium px-2 sm:px-3 py-0.5 sm:py-1 rounded-full inline-block ${cardData.autoPayEnabled ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-600'}`}>
-                        Autopay is {cardData.autoPayEnabled ? 'ON' : 'OFF'}
+                    <span className={`text-[10px] sm:text-xs font-medium px-2 sm:px-3 py-0.5 sm:py-1 rounded-full inline-block ${getCardProperty('autoPayEnabled', false) ? 'bg-green-100 text-green-800' : 'bg-neutral-100 text-neutral-600'}`}>
+                        Autopay is {getCardProperty('autoPayEnabled', false) ? 'ON' : 'OFF'}
                     </span>
                     <Switch
-                      checked={cardData.autoPayEnabled || false}
+                      checked={getCardProperty('autoPayEnabled', false)}
                       onChange={handleToggleAutoPay}
-                      className={`${cardData.autoPayEnabled ? 'bg-primary' : 'bg-neutral-200'}
+                      className={`${getCardProperty('autoPayEnabled', false) ? 'bg-primary' : 'bg-neutral-200'}
                         relative inline-flex h-5 w-9 lg:h-6 lg:w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer`}
                     >
                       <span className="sr-only">Toggle Automatic Payments</span>
                       <span
-                          className={`${cardData.autoPayEnabled ? 'translate-x-5 lg:translate-x-6' : 'translate-x-1'}
+                          className={`${getCardProperty('autoPayEnabled', false) ? 'translate-x-5 lg:translate-x-6' : 'translate-x-1'}
                           inline-block h-3 w-3 lg:h-4 lg:w-4 transform rounded-full bg-white transition-transform`}
                       />
                     </Switch>
@@ -882,7 +900,7 @@ function CardDetailPage({ cards, setCards }) {
                         disabled={false} // Always allow selection change
                       />
                       <span className="text-[11px] sm:text-xs lg:text-sm">
-                        Minimum Payment (<span className="font-semibold">${cardData.minPaymentAmount?.toFixed(2) || '0.00'}</span>)
+                        Minimum Payment (<span className="font-semibold">{formatCurrency(getCardProperty('minPayment', 0))}</span>)
                       </span>
                     </label>
                     {/* Radio Option 2: Statement Balance - Label Adjusted */}
@@ -897,7 +915,7 @@ function CardDetailPage({ cards, setCards }) {
                         disabled={false} // Always allow selection change
                       />
                       <span className="text-[11px] sm:text-xs lg:text-sm">
-                        Statement Balance (<span className="font-semibold">${cardData.statementBalanceAmount?.toFixed(2) || '0.00'}</span>)
+                        Statement Balance (<span className="font-semibold">{formatCurrency(getCardProperty('statementBalance', 0))}</span>)
                       </span>
                     </label>
                   </div>
@@ -971,7 +989,7 @@ function CardDetailPage({ cards, setCards }) {
         {/* Placeholder for withdrawal details - Amount input and Bank Account select */}
         <p className="text-sm lg:text-base text-neutral-700 mb-4">
           Please confirm you wish to withdraw your current rewards balance of
-          <strong className='text-green-700'> ${cardData?.rewardsBalanceAmount?.toFixed(2) || '0.00'}</strong>.
+          <strong className='text-green-700'>{formatCurrency(getCardProperty('rewardsBalance', 0))}</strong>.
         </p>
 
         {/* Bank Account Selector */}

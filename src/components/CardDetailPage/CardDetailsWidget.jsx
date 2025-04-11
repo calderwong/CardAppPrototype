@@ -9,7 +9,7 @@ import {
   CheckIcon,
   ShieldCheckIcon,
   XMarkIcon,
-  FingerPrintIcon,
+  KeyIcon, // Replacing FingerPrintIcon with KeyIcon
   ExclamationTriangleIcon, // For Report
   FlagIcon, // For Report
   DevicePhoneMobileIcon, // For Digital Wallets
@@ -94,7 +94,7 @@ const CardDetailsWidget = ({
           </div>
           
           <div className="mb-4 text-center">
-            <FingerPrintIcon className="h-16 w-16 text-primary mx-auto mb-2" />
+            <KeyIcon className="h-16 w-16 text-primary mx-auto mb-2" />
             <p className="text-sm text-neutral-600 mb-2">
               For your security, we need to verify your identity before showing sensitive information.
             </p>
