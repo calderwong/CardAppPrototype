@@ -4,6 +4,7 @@ import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/CardAppPrototype/', // Add this line for GitHub Pages
   plugins: [react()],
   resolve: {
     alias: {
