@@ -73,6 +73,32 @@ This accelerated process highlights the capabilities of modern frontend tooling 
 *   **Language:** JavaScript (ES6+)
 *   **Package Manager:** [npm](https://www.npmjs.com/)
 
+## AI-Assisted Development Tools
+
+This project leveraged several cutting-edge AI tools to accelerate development:
+
+*   **[Google Gemini 2.5 DeepResearch](https://deepmind.google/technologies/gemini/):** Used to generate comprehensive [product requirements documentation](./src/ReferenceDocs/CardApp_ProductRequirementDoc.md) based on competitive analysis and user needs research.
+
+*   **Google Gemini 2.5:** Utilized for:
+    *   Initial application architecture planning
+    *   Core component structure setup
+    *   Implementation of simple features (dashboard, card listings)
+    *   Early debugging and troubleshooting
+
+*   **[Anthropic Claude 3.7](https://www.anthropic.com/product):** Employed for:
+    *   Advanced UX/UI enhancements (responsive layouts, animations)
+    *   Complex feature implementation (payment processing, rewards management)
+    *   Accessibility improvements and cross-device testing
+    *   Performance optimization
+
+*   **[Windsurf IDE](https://www.codeium.com/windsurf):** First-time usage (transitioning from Cursor IDE) for:
+    *   Contextual code understanding and generation
+    *   Intelligent code completion
+    *   Real-time debugging assistance
+    *   GitHub Pages deployment support
+
+The combination of these AI tools dramatically accelerated the development process, enabling the completion of this functional prototype within a highly compressed timeframe.
+
 ## Getting Started
 
 Follow these instructions to get the project up and running on your local machine for development and testing purposes.
