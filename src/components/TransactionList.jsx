@@ -128,29 +128,29 @@ function TransactionList({ transactions, title = "Recent Transactions", rewardsR
       <div className="p-4 border-b bg-neutral-lightest">
         <h3 className="text-lg font-semibold text-neutral-darker">{title}</h3>
       </div>
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto relative">
         <table className="min-w-full">
           <thead className="bg-neutral-lightest border-b border-neutral-200">
             <tr>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-neutral-darker">
+              <th scope="col" className="px-3 py-3 text-left text-xs font-bold uppercase tracking-wider text-neutral-darker">
                 Date
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-neutral-darker">
+              <th scope="col" className="px-3 py-3 text-left text-xs font-bold uppercase tracking-wider text-neutral-darker">
                 Merchant
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-neutral-darker">
+              <th scope="col" className="px-3 py-3 text-left text-xs font-bold uppercase tracking-wider text-neutral-darker">
                 Category
               </th>
-              <th scope="col" className="px-6 py-3 text-right text-xs font-bold uppercase tracking-wider text-neutral-darker">
+              <th scope="col" className="px-3 py-3 text-right text-xs font-bold uppercase tracking-wider text-neutral-darker">
                 Amount
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-neutral-darker">
+              <th scope="col" className="px-3 py-3 text-left text-xs font-bold uppercase tracking-wider text-neutral-darker">
                 Status
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-neutral-darker">
+              <th scope="col" className="px-3 py-3 text-left text-xs font-bold uppercase tracking-wider text-neutral-darker">
                 Card
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider text-neutral-darker">
+              <th scope="col" className="px-3 py-3 text-left text-xs font-bold uppercase tracking-wider text-neutral-darker sticky right-0 bg-neutral-lightest z-10">
                 <span className="sr-only">Actions</span>
               </th>
             </tr>
@@ -190,10 +190,10 @@ function TransactionList({ transactions, title = "Recent Transactions", rewardsR
 
               return (
                 <tr key={transaction.id} className="hover:bg-neutral-lightest transition-all duration-200">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-dark">
+                  <td className="px-3 py-4 whitespace-nowrap text-sm text-neutral-dark">
                     {transaction.date}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-darker">
+                  <td className="px-3 py-4 whitespace-nowrap text-sm font-medium text-neutral-darker">
                     {transaction.merchantName}
                     {/* Optional: Add address/phone tooltip or icon */} 
                     {(transaction.merchantAddress || transaction.merchantPhone) && (
@@ -206,10 +206,10 @@ function TransactionList({ transactions, title = "Recent Transactions", rewardsR
                       </span>
                     )}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-dark">
+                  <td className="px-3 py-4 whitespace-nowrap text-sm text-neutral-dark">
                     {transaction.category}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-darker text-right">
+                  <td className="px-3 py-4 whitespace-nowrap text-sm text-neutral-darker text-right">
                     <div className={transaction.status === 'Refunded' ? 'text-purple-700' : ''}>
                       {transaction.status === 'Refunded' ? '-' : ''}{formatCurrency(transaction.amount)}
                     </div>
@@ -220,16 +220,16 @@ function TransactionList({ transactions, title = "Recent Transactions", rewardsR
                       </div>
                     )}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-3 py-4 whitespace-nowrap">
                     <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass} items-center transition-colors duration-200`}>
                       {statusIcon}
                       {transaction.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-dark">
+                  <td className="px-3 py-4 whitespace-nowrap text-sm text-neutral-dark">
                     **** {transaction.cardLast4}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                  <td className="px-3 py-4 whitespace-nowrap text-sm sticky right-0 bg-white z-10">
                     <Link to={`/transaction/${transaction.id}`} className="text-primary hover:text-primary-dark transition-colors duration-200 flex items-center">
                       View <ArrowRightIcon className="h-3 w-3 ml-1" />
                     </Link>
