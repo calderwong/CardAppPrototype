@@ -77,10 +77,15 @@ function CardDetailPage({ cards, setCards }) {
   const [showWithdrawModal, setShowWithdrawModal] = useState(false); // State for withdrawal modal
   const [selectedWithdrawalAccount, setSelectedWithdrawalAccount] = useState(mockBankAccounts[0]?.id || ''); // State for selected bank account
   const [showWithdrawalSuccess, setShowWithdrawalSuccess] = useState(false); // State for success message
-  // Added missing state from usage below - assuming defaults
-  const [selectedPaymentAccount, setSelectedPaymentAccount] = useState('');
+  const [selectedAccount, setSelectedAccount] = useState('');
+  const [hasScheduledPayment, setHasScheduledPayment] = useState(false);
+  const [scheduledPaymentAmount, setScheduledPaymentAmount] = useState(0);
+  const [scheduledPaymentDate, setScheduledPaymentDate] = useState('');
+  const [autoPayEnabled, setAutoPayEnabled] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedAutopayAccount, setSelectedAutopayAccount] = useState('');
-  const [showPaymentSuccess, setShowPaymentSuccess] = useState(false); // Added missing state
+  const [selectedPaymentAccount, setSelectedPaymentAccount] = useState('');
+  const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
   // Add state for wallet integration modal
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [selectedWalletType, setSelectedWalletType] = useState('');
