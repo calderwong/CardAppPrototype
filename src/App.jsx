@@ -160,13 +160,13 @@ function App() {
           {/* Footer with Banana Icon and Speech Bubble */}
           <footer className="bg-neutral-medium p-4 text-center text-sm text-neutral-dark mt-8 rounded-t-lg shadow-inner relative">
             <div className="mb-5 flex justify-center items-start">
-              <div className="relative flex items-start">
-                <div className="mr-2 mt-1">
+              <div className="relative flex items-start max-w-xl mx-auto">
+                <div className="mr-2 mt-1 flex-shrink-0">
                   <BananaIcon />
                 </div>
-                <div className="relative max-w-xs bg-white p-3 rounded-xl shadow-md">
+                <div className="relative bg-white p-3 rounded-xl shadow-md">
                   <div className="absolute left-[-10px] top-[10px] w-0 h-0 border-t-[8px] border-r-[12px] border-b-[8px] border-transparent border-r-white"></div>
-                  <p className="text-sm text-left font-medium">
+                  <p className="text-sm text-left font-medium text-black">
                     "You gotta' be kidding me, WHO is going to pay $1M/yr for this? No idea, Harry, but you got a ways to go before you're a wizard like me ;)"
                   </p>
                   <p className="text-xs text-gray-500 text-right mt-1 italic">*inside_joke</p>
