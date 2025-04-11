@@ -74,7 +74,7 @@ function CardDetailPage({ cards, setCards }) {
   const [paymentTypeToSchedule, setPaymentTypeToSchedule] = useState('Minimum');
   const [autoPaySelection, setAutoPaySelection] = useState('Minimum');
   const [showPaymentHistory, setShowPaymentHistory] = useState(false);
-  const [showWithdrawModal, setShowWithdrawModal] = useState(false); // State for withdrawal modal
+  const [showWithdrawalModal, setShowWithdrawalModal] = useState(false); // State for withdrawal modal
   const [selectedWithdrawalAccount, setSelectedWithdrawalAccount] = useState(mockBankAccounts[0]?.id || ''); // State for selected bank account
   const [showWithdrawalSuccess, setShowWithdrawalSuccess] = useState(false); // State for success message
   const [selectedAccount, setSelectedAccount] = useState('');
@@ -93,6 +93,9 @@ function CardDetailPage({ cards, setCards }) {
   
   // Add missing mobile form modal state
   const [showMobileFormModal, setShowMobileFormModal] = useState(false);
+
+  // Add missing mobile menu state
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   // --- Calculate Derived Data (useMemo AFTER useState) ---
   const cardData = useMemo(() => {
@@ -441,7 +444,7 @@ function CardDetailPage({ cards, setCards }) {
     // 1. Guard Clause & Get Data
     if (!cardData || getCardProperty('rewardsBalance', 0) <= 0 || !selectedWithdrawalAccount) {
       console.error("Withdrawal conditions not met.");
-      setShowWithdrawModal(false); // Close modal even on error
+      setShowWithdrawalModal(false); // Close modal even on error
       return;
     }
 
@@ -450,7 +453,7 @@ function CardDetailPage({ cards, setCards }) {
 
     if (!destinationAccount) {
       console.error("Selected bank account not found.");
-      setShowWithdrawModal(false);
+      setShowWithdrawalModal(false);
       return;
     }
     const destinationAccountName = `${destinationAccount.type} (...${destinationAccount.accountNumber.slice(-4)})`; // Corrected template literal
@@ -481,7 +484,7 @@ function CardDetailPage({ cards, setCards }) {
     );
 
     // 4. Close modal and show success message
-    setShowWithdrawModal(false);
+    setShowWithdrawalModal(false);
     setShowWithdrawalSuccess(true); // Show success message
 
     // Hide the message after 3 seconds
@@ -603,7 +606,7 @@ function CardDetailPage({ cards, setCards }) {
                     cardData={cardData}
                     formatCurrency={formatCurrency}
                     formatDate={formatDate}
-                    setShowWithdrawModal={setShowWithdrawModal}
+                    setShowWithdrawModal={setShowWithdrawalModal}
                     showWithdrawalSuccess={showWithdrawalSuccess}
                     totalRewardsEarned={totalRewardsEarned}
                   />
@@ -705,7 +708,7 @@ function CardDetailPage({ cards, setCards }) {
                           cardData={cardData}
                           formatCurrency={formatCurrency}
                           formatDate={formatDate}
-                          setShowWithdrawModal={setShowWithdrawModal}
+                          setShowWithdrawModal={setShowWithdrawalModal}
                           showWithdrawalSuccess={showWithdrawalSuccess}
                           totalRewardsEarned={totalRewardsEarned}
                         />
@@ -986,8 +989,8 @@ function CardDetailPage({ cards, setCards }) {
       )}
 
       <ConfirmationModal
-        isOpen={showWithdrawModal}
-        onClose={() => setShowWithdrawModal(false)}
+        isOpen={showWithdrawalModal}
+        onClose={() => setShowWithdrawalModal(false)}
         onConfirm={handleWithdrawConfirm}
         title="Withdraw Rewards Balance"
         confirmText="Confirm Withdrawal"
