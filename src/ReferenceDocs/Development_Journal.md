@@ -273,79 +273,207 @@ This journal tracks the development progress of the Card Management App prototyp
 
 ---
 
-**USER Request (Step 973):** Add dummy bank accounts and a selector to the withdrawal modal.
-**USER Request (Step 979):** Add a 'Withdrawal Success!' message after submission.
+## April 10, 2025 - Card Visuals & Detail Page Fixes
 
-**Cascade Action (Steps 973-981):**
-1.  Verified `mockBankAccounts` in `mockData.js`.
-2.  Updated `CardDetailPage.jsx`:
-    *   Added state (`selectedWithdrawalAccount`) to track the selected bank account.
-    *   Added a `<select>` dropdown inside the `ConfirmationModal`, populated with `mockBankAccounts`.
-    *   Updated `handleWithdrawConfirm` to log the selected account ID.
-    *   Added state (`showWithdrawalSuccess`) for the success message.
-    *   Updated `handleWithdrawConfirm` to set `showWithdrawalSuccess` to `true` and use `setTimeout` to hide it after 3 seconds.
-    *   Conditionally rendered a styled success message `div` with a `CheckCircleIcon` in the 'Rewards Summary' section based on `showWithdrawalSuccess` state.
+**USER Objective:** Enhance card visuals with distinct colors and labels (Debit/Credit). Resolve issues where card numbers weren't displaying correctly.
 
----
+**USER Observation (Step ~810):** Card background colors were not appearing, showing as white/transparent instead of the intended gradients.
 
-**USER Request (Step 994 & 998):** Implement the withdrawal logic and display the withdrawal history.
+**Cascade Investigation & Fix (Steps 812-826):**
+1.  **Diagnosis:** Reviewed `tailwind.config.js` and `src/index.css`. Determined that while Tailwind scanned the files and recognized the class names (`gradient-blue`, etc.), the actual CSS definitions for these gradients were missing.
+2.  **Action:** Edited `src/index.css` to add standard CSS `linear-gradient` definitions for `.gradient-blue`, `.gradient-purple`, and `.gradient-green`.
+3.  **Linting:** Acknowledged IDE warnings about `@tailwind` and `@apply` as expected and safe to ignore.
 
-**Cascade Action (Steps 996-1000):**
-1.  Updated `handleWithdrawConfirm` in `CardDetailPage.jsx`:
-    *   Added guard clauses for `cardData`, `rewardsBalance > 0`, and `selectedWithdrawalAccount`.
-    *   Fetched `withdrawalAmount` and `destinationAccount` details.
-    *   Created a `newHistoryEntry` object (ID, amount, ISO date, destination string).
-    *   Called `setCards` prop to update the global state: maps over `prevCards`, finds the target card, returns a new card object with `rewardsBalance: 0` and the `newHistoryEntry` added to `rewardsWithdrawalHistory`.
-2.  Added a 'Withdrawal History' section within the 'Rewards Summary' in `CardDetailPage.jsx`:
-    *   Conditionally checks if `cardData.rewardsWithdrawalHistory` has entries.
-    *   If yes, maps over the history (sorted newest first) to render a list (`ul`) of withdrawals.
-    *   Each item (`li`) displays an `ArrowDownTrayIcon`, formatted amount, destination, and formatted date (`MMM d, yyyy`).
-    *   Added `max-h-40 overflow-y-auto` for scrollability.
-    *   If no history, displays 'No withdrawal history yet.'
-3.  Ensured necessary icons (`ArrowDownTrayIcon`, `ClockIcon`) and `format` from `date-fns` were imported.
+**USER Observation (Step 828):** Card numbers (last 4 digits) were missing on the Dashboard view.
+
+**Cascade Investigation & Fix (Steps 830-836):**
+1.  **Data Check:** Verified `mockData.js` still contained `last4` and `fullCardNumber` for all cards.
+2.  **Component Check (`Card.jsx`):** Confirmed the `Card` component logic correctly used `last4` to format the number.
+3.  **Prop Check (`Dashboard.jsx`):** Found the mismatch: `Dashboard.jsx` was passing individual props (`last4`, `holder`, etc.) while `Card.jsx` expected a single `cardData` prop object.
+4.  **Action:** Edited `Dashboard.jsx` to pass the entire `card` object as the `cardData` prop to the `<Card>` component.
+
+**USER Observation (Step 838):** The *full* card number was blank on the `CardDetailPage` after clicking to reveal it (post-2FA simulation).
+
+**Cascade Investigation & Fix (Steps 840-844):**
+1.  **Component Check (`CardDetailPage.jsx`):** Reviewed state (`revealStatus`) and handlers (`handleReveal`, `handleConfirm`).
+2.  **Rendering Logic:** Inspected the JSX responsible for displaying the card number. Found the `<span>` tag intended to show the full number inside the `revealStatus.number === 'revealed'` block was empty.
+3.  **Action:** Edited `CardDetailPage.jsx` to insert `{cardData.fullCardNumber}` into the correct `<span>`.
+4.  **Correction:** Realized the "Copy" button handler next to the revealed number still referenced an incorrect property (`cardData.fullNumber`). Edited `CardDetailPage.jsx` again to update the `handleCopyToClipboard` call to use `cardData.fullCardNumber`.
+
+**Outcome:** Card gradients now display correctly. Card numbers (last 4 on Dashboard, full number on Detail Page reveal) are shown as expected. Checkpoint created (Memory `cca7f6dc-3628-4884-ac0b-ee90cf64d638`).
 
 ---
 
-## April 10, 2025 - Card Details Widget Fixes
+*(Journal will be updated below this line)*
 
-**USER Request:** Fix issues with the Card Details widget where card number wasn't revealing correctly, CVV started off visible, and expiry date wasn't revealing on click.
+**USER Request (Step ~1700):** Enhance the mobile UI design for the Card Detail Page to ensure proper responsiveness and readability.
 
-**Cascade Action:**
-1. **Card Number Reveal Fix**:
-   * Updated the CardDetailsWidget component to use the correct `fullCardNumber` property instead of `cardNumber`
-   * Fixed the formatting to properly display the card number when revealed
-   * Ensured copy to clipboard functionality uses the full card number
+**Cascade Action (Steps ~1710-1730):**
+1. **Mobile UI Refinements for Card Detail Page:**
+   * Enhanced the layout of `CardDetailsWidget`, `RewardsSummaryWidget`, and `PaymentSummaryWidget` components to be mobile-friendly
+   * Ensured widgets stack vertically on mobile to prevent compressed layouts
+   * Implemented responsive design that adapts based on the current view mode (mobile vs. desktop)
 
-2. **CVV Hidden State Fix**:
-   * Modified the CSS class structure for the CVV span to ensure it always starts blurred
-   * Corrected the conditional rendering to properly toggle between hidden and revealed states
-   * Updated the className attribute to properly remove blur styling when revealed
+2. **Timeframe Selection UI Improvements:**
+   * Adjusted the layout of the timeframe selection to display the "Spending Period" label above buttons on mobile
+   * Improved visibility and accessibility of selection options
+   * Adjusted spacing for better mobile experience
 
-3. **Expiry Date Reveal Fix**:
-   * Found and fixed the root issue where the parent component (CardDetailPage.jsx) wasn't initializing the expiry field in the revealStatus state
-   * Updated the initial state to include `expiry: 'hidden'` in the revealStatus object
-   * Ensured the reset logic in useEffect also includes the expiry field
-   * Fixed the conditional CSS in the component to properly remove blur when revealed
+3. **Dashboard UI Enhancements:**
+   * Updated the chart layout to ensure "Budget Breakdown" and "Spending Over Time" widgets are stacked vertically on mobile
+   * Improved responsiveness of all dashboard elements
 
-These fixes ensure that all three sensitive information fields (card number, CVV, and expiry date) correctly implement the 2FA verification flow, starting in a hidden state and only revealing after proper verification.
+**Outcome:** The Card Detail Page and Dashboard now provide an optimized viewing experience across different screen sizes, with particular attention to mobile usability. The layout adjusts dynamically based on the current view mode, ensuring all information remains accessible and well-formatted.
 
 ---
 
-**USER Request (Step 994 & 998):** Implement the withdrawal logic and display the withdrawal history.
+**USER Request (Step 1749):** Improve the transaction viewing feature by ensuring that clicking on the "View" hyperlink opens a detailed transaction page instead of a blank page.
 
-**Cascade Action (Steps 996-1000):**
-1.  Updated `handleWithdrawConfirm` in `CardDetailPage.jsx`:
-    *   Added guard clauses for `cardData`, `rewardsBalance > 0`, and `selectedWithdrawalAccount`.
-    *   Fetched `withdrawalAmount` and `destinationAccount` details.
-    *   Created a `newHistoryEntry` object (ID, amount, ISO date, destination string).
-    *   Called `setCards` prop to update the global state: maps over `prevCards`, finds the target card, returns a new card object with `rewardsBalance: 0` and the `newHistoryEntry` added to `rewardsWithdrawalHistory`.
-2.  Added a 'Withdrawal History' section within the 'Rewards Summary' in `CardDetailPage.jsx`:
-    *   Conditionally checks if `cardData.rewardsWithdrawalHistory` has entries.
-    *   If yes, maps over the history (sorted newest first) to render a list (`ul`) of withdrawals.
-    *   Each item (`li`) displays an `ArrowDownTrayIcon`, formatted amount, destination, and formatted date (`MMM d, yyyy`).
-    *   Added `max-h-40 overflow-y-auto` for scrollability.
-    *   If no history, displays 'No withdrawal history yet.'
-3.  Ensured necessary icons (`ArrowDownTrayIcon`, `ClockIcon`) and `format` from `date-fns` were imported.
+**Cascade Action (Steps 1751-1763):**
+1. **Creation of Transaction Detail Page:**
+   * Created a new file `TransactionDetailPage.jsx` with a responsive UI for displaying transaction details
+   * Implemented detailed sections for merchant information (name, address, phone), transaction details (date, amount, category), and card used
+   * Added a map placeholder section for transactions with location data
+   * Created color-coded status indicators with appropriate icons
+   * Added a back navigation button and contextual action buttons based on transaction status
+
+2. **App Routing Updates:**
+   * Updated `App.jsx` to add routes for the transaction detail page in both mobile and browser views
+   * Added route `/transaction/:id` to navigate to the transaction detail
+
+3. **Mobile UI Enhancement (Step 1761-1763):**
+   * Redesigned the `TransactionList` component to be mobile-friendly
+   * Replaced the horizontal-scrolling table with a card-based layout for mobile
+   * Used context from `ViewModeContext` to detect mobile vs. desktop view
+   * Maintained the traditional table layout for desktop view
+   * Added icons and improved spacing in the mobile card layout
+
+---
+
+**USER Request (Step 1765):** Audit and enhance the mock data to better demonstrate all functionality.
+
+**Cascade Action (Steps 1767-1773):**
+1. **Enhanced Transaction Mock Data:**
+   * Added new transaction status types: Declined, Refunded, and Processing
+   * Added transaction-specific details like decline reasons, refund information, and processing details
+   * Ensured each status type had representative transactions in the mock data
+
+2. **Enhanced Card Information:**
+   * Added complete card details including balances, limits, and payment information
+   * Enhanced interest rates and statement dates
+   * Added rewards withdrawal history records
+   * Included complete information for the locked card status with reason
+
+3. **UI Updates for New Data:**
+   * Updated `TransactionList` to handle and appropriately display new status types
+   * Added color coding and icons specific to each transaction status
+   * Updated `TransactionDetailPage` to show status-specific information panels
+   * Added contextual action buttons based on transaction status (e.g., "Contact Support" for declined transactions)
+   * Added special formatting for refunded transactions
+
+**Outcome:** The transaction viewing feature now provides a comprehensive user experience with detailed transaction information, appropriate status indicators, and a fully responsive design that works well on both mobile and desktop views. The mock data now includes edge cases and various transaction types to better demonstrate all app functionality.
+
+---
+
+## April 10, 2025 - Card Visuals & Detail Page Fixes
+
+**USER Objective:** Enhance card visuals with distinct colors and labels (Debit/Credit). Resolve issues where card numbers weren't displaying correctly.
+
+**USER Observation (Step ~810):** Card background colors were not appearing, showing as white/transparent instead of the intended gradients.
+
+**Cascade Investigation & Fix (Steps 812-826):**
+1.  **Diagnosis:** Reviewed `tailwind.config.js` and `src/index.css`. Determined that while Tailwind scanned the files and recognized the class names (`gradient-blue`, etc.), the actual CSS definitions for these gradients were missing.
+2.  **Action:** Edited `src/index.css` to add standard CSS `linear-gradient` definitions for `.gradient-blue`, `.gradient-purple`, and `.gradient-green`.
+3.  **Linting:** Acknowledged IDE warnings about `@tailwind` and `@apply` as expected and safe to ignore.
+
+**USER Observation (Step 828):** Card numbers (last 4 digits) were missing on the Dashboard view.
+
+**Cascade Investigation & Fix (Steps 830-836):**
+1.  **Data Check:** Verified `mockData.js` still contained `last4` and `fullCardNumber` for all cards.
+2.  **Component Check (`Card.jsx`):** Confirmed the `Card` component logic correctly used `last4` to format the number.
+3.  **Prop Check (`Dashboard.jsx`):** Found the mismatch: `Dashboard.jsx` was passing individual props (`last4`, `holder`, etc.) while `Card.jsx` expected a single `cardData` prop object.
+4.  **Action:** Edited `Dashboard.jsx` to pass the entire `card` object as the `cardData` prop to the `<Card>` component.
+
+**USER Observation (Step 838):** The *full* card number was blank on the `CardDetailPage` after clicking to reveal it (post-2FA simulation).
+
+**Cascade Investigation & Fix (Steps 840-844):**
+1.  **Component Check (`CardDetailPage.jsx`):** Reviewed state (`revealStatus`) and handlers (`handleReveal`, `handleConfirm`).
+2.  **Rendering Logic:** Inspected the JSX responsible for displaying the card number. Found the `<span>` tag intended to show the full number inside the `revealStatus.number === 'revealed'` block was empty.
+3.  **Action:** Edited `CardDetailPage.jsx` to insert `{cardData.fullCardNumber}` into the correct `<span>`.
+4.  **Correction:** Realized the "Copy" button handler next to the revealed number still referenced an incorrect property (`cardData.fullNumber`). Edited `CardDetailPage.jsx` again to update the `handleCopyToClipboard` call to use `cardData.fullCardNumber`.
+
+**Outcome:** Card gradients now display correctly. Card numbers (last 4 on Dashboard, full number on Detail Page reveal) are shown as expected. Checkpoint created (Memory `cca7f6dc-3628-4884-ac0b-ee90cf64d638`).
+
+---
+
+*(Journal will be updated below this line)*
+
+**USER Request (Step ~1700):** Enhance the mobile UI design for the Card Detail Page to ensure proper responsiveness and readability.
+
+**Cascade Action (Steps ~1710-1730):**
+1. **Mobile UI Refinements for Card Detail Page:**
+   * Enhanced the layout of `CardDetailsWidget`, `RewardsSummaryWidget`, and `PaymentSummaryWidget` components to be mobile-friendly
+   * Ensured widgets stack vertically on mobile to prevent compressed layouts
+   * Implemented responsive design that adapts based on the current view mode (mobile vs. desktop)
+
+2. **Timeframe Selection UI Improvements:**
+   * Adjusted the layout of the timeframe selection to display the "Spending Period" label above buttons on mobile
+   * Improved visibility and accessibility of selection options
+   * Adjusted spacing for better mobile experience
+
+3. **Dashboard UI Enhancements:**
+   * Updated the chart layout to ensure "Budget Breakdown" and "Spending Over Time" widgets are stacked vertically on mobile
+   * Improved responsiveness of all dashboard elements
+
+**Outcome:** The Card Detail Page and Dashboard now provide an optimized viewing experience across different screen sizes, with particular attention to mobile usability. The layout adjusts dynamically based on the current view mode, ensuring all information remains accessible and well-formatted.
+
+---
+
+**USER Request (Step 1749):** Improve the transaction viewing feature by ensuring that clicking on the "View" hyperlink opens a detailed transaction page instead of a blank page.
+
+**Cascade Action (Steps 1751-1763):**
+1. **Creation of Transaction Detail Page:**
+   * Created a new file `TransactionDetailPage.jsx` with a responsive UI for displaying transaction details
+   * Implemented detailed sections for merchant information (name, address, phone), transaction details (date, amount, category), and card used
+   * Added a map placeholder section for transactions with location data
+   * Created color-coded status indicators with appropriate icons
+   * Added a back navigation button and contextual action buttons based on transaction status
+
+2. **App Routing Updates:**
+   * Updated `App.jsx` to add routes for the transaction detail page in both mobile and browser views
+   * Added route `/transaction/:id` to navigate to the transaction detail
+
+3. **Mobile UI Enhancement (Step 1761-1763):**
+   * Redesigned the `TransactionList` component to be mobile-friendly
+   * Replaced the horizontal-scrolling table with a card-based layout for mobile
+   * Used context from `ViewModeContext` to detect mobile vs. desktop view
+   * Maintained the traditional table layout for desktop view
+   * Added icons and improved spacing in the mobile card layout
+
+---
+
+**USER Request (Step 1765):** Audit and enhance the mock data to better demonstrate all functionality.
+
+**Cascade Action (Steps 1767-1773):**
+1. **Enhanced Transaction Mock Data:**
+   * Added new transaction status types: Declined, Refunded, and Processing
+   * Added transaction-specific details like decline reasons, refund information, and processing details
+   * Ensured each status type had representative transactions in the mock data
+
+2. **Enhanced Card Information:**
+   * Added complete card details including balances, limits, and payment information
+   * Enhanced interest rates and statement dates
+   * Added rewards withdrawal history records
+   * Included complete information for the locked card status with reason
+
+3. **UI Updates for New Data:**
+   * Updated `TransactionList` to handle and appropriately display new status types
+   * Added color coding and icons specific to each transaction status
+   * Updated `TransactionDetailPage` to show status-specific information panels
+   * Added contextual action buttons based on transaction status (e.g., "Contact Support" for declined transactions)
+   * Added special formatting for refunded transactions
+
+**Outcome:** The transaction viewing feature now provides a comprehensive user experience with detailed transaction information, appropriate status indicators, and a fully responsive design that works well on both mobile and desktop views. The mock data now includes edge cases and various transaction types to better demonstrate all app functionality.
 
 ---
 
@@ -448,3 +576,83 @@ Created a new `WalletIntegrationModal` component simulating a realistic wallet i
    * Added proper logging for debugging and user notifications
 
 Both enhancements provide a significantly more realistic and professional user experience, closely mirroring what users would expect from a production banking application while following modern UX best practices for financial interfaces.
+
+---
+
+### Date: 2025-04-10
+**Goal:** Fix blank screen issue on Card Detail Page.
+
+**Problem:**
+- Navigating to any Card Detail page resulted in a blank screen.
+- Browser console showed a `ReferenceError: setShowWithdrawalModal is not defined` originating from `CardDetailPage.jsx`, seemingly around line 215 within a `useEffect` hook.
+
+**Debugging Steps:**
+1.  Verified the `useState` declaration for `showWithdrawalModal` and `setShowWithdrawalModal` (line 76).
+2.  Examined the `useEffect` hook (lines 212-216) where the error was reported. The usage seemed correct.
+3.  Used `grep_search` for `setShowWithdrawalModal` within the file, which surprisingly returned no results, hinting at an issue.
+4.  Cleared Vite cache (`.vite`), stopped the server, reinstalled dependencies (`npm install`), and restarted the server (`npm run dev`). The error persisted.
+5.  Temporarily commented out the lines (214, 215) within the `useEffect` reported by the error log. The error still occurred, indicating a source map inaccuracy or an issue triggered earlier in the render cycle.
+6.  Re-examined the `useState` declaration on line 76 closely.
+
+**Resolution:**
+- Discovered a typo in the `useState` declaration: `showWithdrawModal`, `setShowWithdrawModal` was used instead of the correct `showWithdrawalModal`, `setShowWithdrawalModal`.
+- Corrected the typo in the state declaration and all its usages throughout `CardDetailPage.jsx`.
+
+**Outcome:**
+- The `ReferenceError` was resolved.
+- The Card Detail page now loads correctly.
+
+**Learnings:**
+- Subtle typos, especially in variable names used across multiple locations (state variables, functions), can lead to persistent and sometimes misleading errors.
+- When `grep_search` fails to find a variable that clearly exists and is causing an error, double-check for typos in its declaration.
+- Cache clearing and restarting the dev server are good first steps but don't always solve the root cause if it's a code issue.
+
+---
+
+**USER Request (Step 994 & 998):** Implement the withdrawal logic and display the withdrawal history.
+
+**Cascade Action (Steps 996-1000):**
+1.  Updated `handleWithdrawConfirm` in `CardDetailPage.jsx`:
+    *   Added guard clauses for `cardData`, `rewardsBalance > 0`, and `selectedWithdrawalAccount`.
+    *   Fetched `withdrawalAmount` and `destinationAccount` details.
+    *   Created a `newHistoryEntry` object (ID, amount, ISO date, destination string).
+    *   Called `setCards` prop to update the global state: maps over `prevCards`, finds the target card, returns a new card object with `rewardsBalance: 0` and the `newHistoryEntry` added to `rewardsWithdrawalHistory`.
+2.  Added a 'Withdrawal History' section within the 'Rewards Summary' in `CardDetailPage.jsx`:
+    *   Conditionally checks if `cardData.rewardsWithdrawalHistory` has entries.
+    *   If yes, maps over the history (sorted newest first) to render a list (`ul`) of withdrawals.
+    *   Each item (`li`) displays an `ArrowDownTrayIcon`, formatted amount, destination, and formatted date (`MMM d, yyyy`).
+    *   Added `max-h-40 overflow-y-auto` for scrollability.
+    *   If no history, displays 'No withdrawal history yet.'
+3.  Ensured necessary icons (`ArrowDownTrayIcon`, `ClockIcon`) and `format` from `date-fns` were imported.
+
+---
+
+## April 10, 2025 - Follow-up Actions (Documentation & Licensing)
+
+**USER Request:** Create a README.md and add the MIT license.
+
+**Cascade Action:**
+1.  **README.md Creation:**
+    *   Generated a comprehensive `README.md` file for the project root.
+    *   **Purpose:** To provide essential information for anyone encountering the project, including future developers or users wanting to run the demo.
+    *   **Contents Added:**
+        *   **Overview:** Explaining the project's purpose as a card management prototype using mock data.
+        *   **Features:** Listing the key functionalities implemented (Dashboard, Card Details, Payments, Rewards, Security).
+        *   **Tech Stack:** Detailing the technologies used (React, Vite, Tailwind CSS, React Router, Heroicons, npm).
+        *   **Getting Started:** Providing step-by-step instructions for prerequisites, installation (`npm install`), and running the development server (`npm run dev`).
+        *   **Available Scripts:** Listing common `npm` scripts (`dev`, `build`, `lint`, `preview`).
+        *   **Project Structure:** Giving a simplified overview of the directory layout and key configuration files.
+        *   **Contributing:** Placeholder stating contributions are not currently open.
+        *   **License:** Initial placeholder text.
+2.  **Licensing Update (MIT):**
+    *   Updated the `License` section within `README.md` to reflect the standard MIT License.
+    *   Replaced the initial placeholder text with the full MIT License text.
+    *   Updated the copyright line within the `README.md`'s license text to `Copyright (c) 2025 Calder ("CJ") Wong / Hapa.ai` as requested.
+    *   Created a separate `LICENSE` file in the project root containing the full MIT License text with the updated copyright information.
+3.  **Version Control:**
+    *   Staged and committed the new `README.md` file (`docs: Add comprehensive README.md`).
+    *   Staged and committed the updated `README.md` and the new `LICENSE` file (`docs: Update license to MIT and add LICENSE file`).
+
+**Outcome:**
+- The project now has a detailed `README.md` providing essential context and setup instructions.
+- The project is explicitly licensed under the MIT License, both in the `README.md` and a dedicated `LICENSE` file.
