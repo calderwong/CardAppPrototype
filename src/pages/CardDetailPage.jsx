@@ -33,6 +33,7 @@ import RewardsSummaryWidget from '../components/CardDetailPage/RewardsSummaryWid
 import TransactionDashboardWidget from '../components/CardDetailPage/TransactionDashboardWidget'; // Import the TransactionDashboardWidget
 import TravelNotificationsWidget from '../components/CardDetailPage/TravelNotificationsWidget'; // Import the TravelNotificationsWidget
 import CardTransactionListWidget from '../components/CardDetailPage/CardTransactionListWidget'; // Import the CardTransactionListWidget
+import WalletIntegrationModal from '../components/WalletIntegrationModal'; // Import the new WalletIntegrationModal
 
 function CardDetailPage({ cards, setCards }) {
   const { id } = useParams();
@@ -69,7 +70,10 @@ function CardDetailPage({ cards, setCards }) {
   const [selectedPaymentAccount, setSelectedPaymentAccount] = useState('');
   const [selectedAutopayAccount, setSelectedAutopayAccount] = useState('');
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false); // Added missing state
-
+  // Add state for wallet integration modal
+  const [showWalletModal, setShowWalletModal] = useState(false);
+  const [selectedWalletType, setSelectedWalletType] = useState('');
+  const [walletIntegrationStatus, setWalletIntegrationStatus] = useState([]);
 
   // --- Calculate Derived Data (useMemo AFTER useState) ---
   const cardData = useMemo(() => {
@@ -119,20 +123,47 @@ function CardDetailPage({ cards, setCards }) {
     setShowPaymentHistory(false);
   }, [cardData]); // Rerun only when cardData changes
 
-  // --- Loading / Not Found State ---
-  if (!cardData) {
-    return (
-      <div className="container mx-auto p-4 text-center">
-         <Link to="/" className="text-primary hover:underline inline-flex items-center mb-4">
-           <ArrowLeftIcon className="h-5 w-5 mr-1" />
-           Back to Dashboard
-         </Link>
-        <p className="text-lg text-neutral-dark">
-          {isNaN(numericCardId) ? 'Invalid Card ID.' : 'Loading card details or card not found...'}
-        </p>
-      </div>
-    );
-  }
+  // Reset state when card changes
+  useEffect(() => {
+    // Clear state when card changes
+    if (!cardData) return; // Don't run if cardData is not yet available
+
+    // Reset general state
+    setRevealStatus({ number: 'hidden', cvv: 'hidden', expiry: 'hidden' });
+    setCopiedField(null);
+    setShowReportForm(false);
+    // Reset lock/freeze based on actual card data
+    const isCurrentlyLocked = cardData.status !== 'Active';
+    setIsLocked(isCurrentlyLocked);
+    setIsOnlineFrozen(cardData.onlineFrozen || false);
+    setIsAtmFrozen(cardData.atmFrozen || false);
+    // Reset travel notifications
+    setTravelNotifications(cardData.travelNotifications || []);
+    
+    // Reset report state
+    setReportType('lost');
+    setKeepNumber(false);
+    setDisputedTransactions({});
+    setReportSubmitted(false);
+    setTemporaryCardNumber('');
+    setDisputeCount(0);
+    
+    // Reset payment state
+    setPaymentTypeToSchedule('Minimum');
+    setSelectedAccount(mockBankAccounts[0]?.id || '');
+    setHasScheduledPayment(cardData.hasScheduledPayment || false);
+    setScheduledPaymentAmount(cardData.scheduledPaymentAmount || 0);
+    setScheduledPaymentDate(cardData.scheduledPaymentDate || '');
+    setAutoPayEnabled(cardData.autoPayEnabled || false);
+    setAutoPaySelection(cardData.autoPayType || 'Minimum');
+    setShowPaymentModal(false);
+    setSelectedAutopayAccount(cardData.autopayAccountId || mockBankAccounts[0]?.id || '');
+    
+    // Reset rewards state
+    setSelectedWithdrawalAccount(mockBankAccounts[0]?.id || '');
+    setShowWithdrawalModal(false);
+    setShowWithdrawalSuccess(false);
+  }, [cardData, numericCardId]);
 
   const handleDisputeChange = (txId) => {
     setDisputedTransactions(prev => ({
@@ -321,8 +352,21 @@ function CardDetailPage({ cards, setCards }) {
   };
 
   const handleAddToWallet = (walletType) => {
-    console.log(`Attempting to add card ending in ${cardData.last4} to ${walletType}...`);
-    alert(`Simulating adding card to ${walletType}. Check console for details.`);
+    setSelectedWalletType(walletType);
+    setShowWalletModal(true);
+  };
+
+  // Handle wallet integration completion
+  const handleWalletIntegrationComplete = (walletType) => {
+    // Add to integration status
+    setWalletIntegrationStatus(prev => [...prev, { 
+      walletType, 
+      timestamp: new Date().toISOString(),
+      status: 'success'
+    }]);
+    
+    // Update console for demo purposes
+    console.log(`Successfully added card ending in ${cardData.last4} to ${walletType}.`);
   };
 
   const cardTransactions = useMemo(() => {
@@ -883,6 +927,15 @@ function CardDetailPage({ cards, setCards }) {
           cardId={numericCardId}
         />
       )}
+
+      {/* Wallet Integration Modal */}
+      <WalletIntegrationModal
+        isOpen={showWalletModal}
+        onClose={() => setShowWalletModal(false)}
+        walletType={selectedWalletType}
+        cardData={cardData}
+        onAddComplete={handleWalletIntegrationComplete}
+      />
 
       {showTravelModal && (
         <TravelNotificationModal
