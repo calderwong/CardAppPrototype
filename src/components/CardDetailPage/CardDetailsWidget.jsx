@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   CreditCardIcon,
   LockClosedIcon,
@@ -9,6 +9,7 @@ import {
   CheckIcon
 } from '@heroicons/react/24/outline';
 import LabelValueDisplay from '../common/LabelValueDisplay';
+import { ViewModeContext } from '../../App';
 
 const CardDetailsWidget = ({ 
   cardData, 
@@ -18,6 +19,9 @@ const CardDetailsWidget = ({
   handleCopyToClipboard, 
   formatCardNumber 
 }) => {
+  // Get view mode from context
+  const viewMode = useContext(ViewModeContext);
+  const isMobile = viewMode === 'mobile';
 
   // Extract necessary fields for clarity (optional, but can help)
   const {
@@ -29,8 +33,8 @@ const CardDetailsWidget = ({
   } = cardData;
 
   return (
-    <div className="bg-white p-6 lg:p-8 rounded-lg shadow-lg border border-neutral-200">
-      <h3 className="text-lg lg:text-2xl font-semibold text-neutral-darker mb-4">Card Details</h3>
+    <div className={`bg-white ${isMobile ? 'p-4' : 'p-6 lg:p-8'} rounded-lg shadow-lg border border-neutral-200`}>
+      <h3 className={`${isMobile ? 'text-lg' : 'text-lg lg:text-2xl'} font-semibold text-neutral-darker mb-4`}>Card Details</h3>
       {/* Basic Info */}
       <div className="mb-3 lg:mb-4 pb-3 lg:pb-4 border-b border-neutral-100 space-y-1">
         <LabelValueDisplay label="Cardholder" value={cardholderName} className="flex justify-between items-center" />
@@ -56,7 +60,7 @@ const CardDetailsWidget = ({
           className="flex justify-between items-center"
           valueSlot={ 
             <div className="flex items-center space-x-2">
-              <span className={showSensitive.number ? 'font-mono' : 'font-mono blur-[4px] select-none'}>
+              <span className={`${showSensitive.number ? 'font-mono' : 'font-mono blur-[4px] select-none'} ${isMobile ? 'text-sm' : ''}`}>
                 {showSensitive.number ? formatCardNumber(cardNumber) : '**** **** **** ****'}
               </span>
               <button onClick={() => toggleSensitive('number')} className="text-neutral-400 hover:text-neutral-600">
@@ -75,7 +79,7 @@ const CardDetailsWidget = ({
           className="flex justify-between items-center"
           valueSlot={ 
             <div className="flex items-center space-x-2">
-              <span className={showSensitive.cvv ? 'font-mono' : 'font-mono blur-[4px] select-none'}>
+              <span className={`${showSensitive.cvv ? 'font-mono' : 'font-mono blur-[4px] select-none'} ${isMobile ? 'text-sm' : ''}`}>
                 {showSensitive.cvv ? cvv : '***'}
               </span>
                <button onClick={() => toggleSensitive('cvv')} className="text-neutral-400 hover:text-neutral-600">
@@ -94,7 +98,7 @@ const CardDetailsWidget = ({
           className="flex justify-between items-center"
           valueSlot={ 
             <div className="flex items-center space-x-2">
-              <span className={showSensitive.expiry ? 'font-mono' : 'font-mono blur-[4px] select-none'}>
+              <span className={`${showSensitive.expiry ? 'font-mono' : 'font-mono blur-[4px] select-none'} ${isMobile ? 'text-sm' : ''}`}>
                 {showSensitive.expiry ? expiryDate : '**/**'}
               </span>
                <button onClick={() => toggleSensitive('expiry')} className="text-neutral-400 hover:text-neutral-600">

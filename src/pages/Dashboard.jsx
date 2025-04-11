@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useContext } from 'react';
 import { Link } from 'react-router-dom'; 
 import { 
   PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, 
@@ -8,6 +8,7 @@ import {
 import Card from '../components/Card/Card.jsx';
 import TransactionList from '../components/TransactionList';
 import { CATEGORIES, mockTransactions } from '../data/mockData.js';
+import { ViewModeContext } from '../App'; // Import ViewModeContext
 
 // Helper to format currency
 const formatCurrency = (amount) => {
@@ -75,6 +76,9 @@ function Dashboard({ cards, filterCardId = null }) {
   const [timeframe, setTimeframe] = useState('TM'); // TM, LM, LQ, T12M
   // State for budget category filtering
   const [selectedBudgetCategory, setSelectedBudgetCategory] = useState(null);
+  // Get view mode from context
+  const viewMode = useContext(ViewModeContext);
+  const isMobile = viewMode === 'mobile';
 
   // Function to toggle transaction expansion
   const toggleTransaction = (id) => {
@@ -289,27 +293,49 @@ function Dashboard({ cards, filterCardId = null }) {
         </div>
       )}
 
-      {/* Timeframe Selection */} 
-      <div className="flex justify-end items-center space-x-2 mb-4">
-          <span className="text-sm font-medium text-neutral-dark">Spending Period:</span>
-          {['TM', 'LM', 'LQ', 'T12M'].map((tf) => (
-              <button
+      {/* Timeframe Selection - Updated for mobile responsiveness */} 
+      <div className="mb-4">
+        {isMobile ? (
+          // Mobile layout with label above buttons
+          <div className="space-y-2">
+            <div className="text-sm font-medium text-neutral-dark">Spending Period:</div>
+            <div className="flex flex-wrap gap-2">
+              {['TM', 'LM', 'LQ', 'T12M'].map((tf) => (
+                <button
                   key={tf}
                   onClick={() => setTimeframe(tf)}
                   className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
-                      timeframe === tf ? 'bg-primary text-white' : 'bg-neutral-light text-neutral-dark hover:bg-neutral-medium'
+                    timeframe === tf ? 'bg-primary text-white' : 'bg-neutral-light text-neutral-dark hover:bg-neutral-medium'
                   }`}
-              >
+                >
                   {tf === 'TM' ? 'This Month' : tf === 'LM' ? 'Last Month' : tf === 'LQ' ? 'Last Quarter' : 'Last 12 Months'}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : (
+          // Desktop layout with label inline
+          <div className="flex justify-end items-center space-x-2">
+            <span className="text-sm font-medium text-neutral-dark">Spending Period:</span>
+            {['TM', 'LM', 'LQ', 'T12M'].map((tf) => (
+              <button
+                key={tf}
+                onClick={() => setTimeframe(tf)}
+                className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
+                  timeframe === tf ? 'bg-primary text-white' : 'bg-neutral-light text-neutral-dark hover:bg-neutral-medium'
+                }`}
+              >
+                {tf === 'TM' ? 'This Month' : tf === 'LM' ? 'Last Month' : tf === 'LQ' ? 'Last Quarter' : 'Last 12 Months'}
               </button>
-          ))}
+            ))}
+          </div>
+        )}
       </div>
 
-
-      {/* Charts Row */} 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        {/* Budget Pie Chart - Takes up 2/5 width */} 
-        <div className="lg:col-span-2 bg-white p-4 lg:p-6 rounded-lg shadow-md">
+      {/* Charts Row - Updated to stack vertically on mobile */} 
+      <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-5'} gap-6`}>
+        {/* Budget Pie Chart - Full width on mobile, 2/5 width on desktop */} 
+        <div className={`${isMobile ? 'col-span-1' : 'lg:col-span-2'} bg-white p-4 lg:p-6 rounded-lg shadow-md`}>
           <h3 className="text-lg font-semibold text-neutral-darker mb-1">Budget Breakdown</h3>
           <p className="text-sm text-neutral-dark mb-4">Total Spent ({timeframeLabel(timeframe)}): {formatCurrency(totalSpendingForPeriod)}</p>
           <ResponsiveContainer width="100%" height={300}>
@@ -351,8 +377,8 @@ function Dashboard({ cards, filterCardId = null }) {
           </ResponsiveContainer>
         </div>
 
-        {/* Spending Timeline Chart - Takes up 3/5 width */} 
-        <div className="lg:col-span-3 bg-white p-4 lg:p-6 rounded-lg shadow-md">
+        {/* Spending Timeline Chart - Full width on mobile, 3/5 width on desktop */} 
+        <div className={`${isMobile ? 'col-span-1' : 'lg:col-span-3'} bg-white p-4 lg:p-6 rounded-lg shadow-md`}>
           <h3 className="text-lg font-semibold text-neutral-darker mb-6">Spending Over Time ({timeframeLabel(timeframe)})</h3>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart

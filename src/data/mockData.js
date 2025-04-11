@@ -280,6 +280,46 @@ export const mockTransactions = [
     merchantAddress: 'N/A - ISP',
     merchantPhone: '877-NET-FAST',
   },
+  {
+    id: 22,
+    merchantName: 'Suspicious Online Store',
+    amount: 499.99,
+    date: '2025-04-09',
+    status: 'Declined',
+    cardId: 3,
+    cardLast4: '9012',
+    category: CATEGORIES.SHOPPING,
+    merchantAddress: 'N/A - Online',
+    merchantPhone: 'N/A',
+    declineReason: 'Suspicious activity detected'
+  },
+  {
+    id: 23,
+    merchantName: 'Department Store Returns',
+    amount: 87.50,
+    date: '2025-04-07',
+    status: 'Refunded',
+    cardId: 2,
+    cardLast4: '5678',
+    category: CATEGORIES.SHOPPING,
+    merchantAddress: '200 Mall Blvd, Anytown, CA 90210',
+    merchantPhone: '555-RETURNS',
+    originalTransactionDate: '2025-04-01',
+    refundReason: 'Item returned in-store'
+  },
+  {
+    id: 24,
+    merchantName: 'Hotel Booking',
+    amount: 342.80,
+    date: '2025-04-10',
+    status: 'Processing',
+    cardId: 1, 
+    cardLast4: '1234',
+    category: CATEGORIES.TRAVEL,
+    merchantAddress: '1 Resort Way, Beachtown, CA 92679',
+    merchantPhone: '800-BEACHES',
+    processingDetails: 'Authorization hold - final amount may vary'
+  },
 ];
 
 export const mockCards = [
@@ -294,6 +334,22 @@ export const mockCards = [
     cardDesign: 'gradient-blue',
     status: 'Active',
     accountType: 'Debit',
+    availableBalance: 2784.15,
+    pendingTransactions: 342.80,
+    lastStatementDate: '2025-04-01',
+    dailyWithdrawalLimit: 1000,
+    dailyPurchaseLimit: 5000,
+    rewardsRate: 0.005, // 0.5% for debit
+    rewardsBalance: 42.30,
+    rewardsWithdrawalHistory: [
+      {
+        id: 'rwd1',
+        amount: 25.00,
+        date: '2025-03-15',
+        destinationAccountId: 'chk1',
+        destinationAccountName: 'Checking Account (ending in 1234)'
+      }
+    ],
   },
   {
     id: 2,
@@ -309,6 +365,12 @@ export const mockCards = [
     paymentDueDate: '2025-05-01',
     minPaymentAmount: 31.55,
     statementBalance: 425.80,
+    currentBalance: 487.12,
+    availableCredit: 4512.88,
+    creditLimit: 5000.00,
+    lastStatementDate: '2025-04-01',
+    nextStatementDate: '2025-05-01',
+    interestRate: 18.99,
     paymentHistory: [
       { date: '2025-04-02', amount: 29.00, type: 'Minimum' },
       { date: '2025-03-01', amount: 354.50, type: 'Statement' },
@@ -318,8 +380,23 @@ export const mockCards = [
     autoPayEnabled: true,
     autoPayType: 'Minimum',
     rewardsRate: 0.015, // 1.5%
-    rewardsBalance: 15.75, // ADDED SAMPLE BALANCE
-    rewardsWithdrawalHistory: [],
+    rewardsBalance: 85.75,
+    rewardsWithdrawalHistory: [
+      {
+        id: 'rwd2',
+        amount: 50.00,
+        date: '2025-03-20',
+        destinationAccountId: 'sav1',
+        destinationAccountName: 'Savings Account (ending in 5678)'
+      },
+      {
+        id: 'rwd3',
+        amount: 25.00,
+        date: '2025-02-05',
+        destinationAccountId: 'chk1',
+        destinationAccountName: 'Checking Account (ending in 1234)'
+      }
+    ],
   },
   {
     id: 3,
@@ -331,21 +408,36 @@ export const mockCards = [
     cardType: 'Amex',
     cardDesign: 'gradient-green',
     status: 'Locked',
+    lockReason: 'Suspicious activity detected on 2025-04-09',
     accountType: 'Credit',
     paymentDueDate: '2025-05-01',
     minPaymentAmount: 37.10,
     statementBalance: 472.15,
+    currentBalance: 542.15,
+    availableCredit: 9457.85,
+    creditLimit: 10000.00,
+    lastStatementDate: '2025-04-01',
+    nextStatementDate: '2025-05-01',
+    interestRate: 17.50,
     paymentHistory: [
       { date: '2025-04-02', amount: 31.00, type: 'Minimum' },
       { date: '2025-03-01', amount: 356.50, type: 'Statement' },
       { date: '2025-02-01', amount: 56.00, type: 'Other' },
     ],
-    scheduledPayment: null,
+    scheduledPayment: { amount: 37.10, type: 'Minimum', date: '2025-04-30' },
     autoPayEnabled: false,
     autoPayType: null,
-    rewardsRate: 0.015, // 1.5%
-    rewardsBalance: 28.50, // ADDED SAMPLE BALANCE
-    rewardsWithdrawalHistory: [],
+    rewardsRate: 0.02, // 2.0% premium rewards
+    rewardsBalance: 128.50,
+    rewardsWithdrawalHistory: [
+      {
+        id: 'rwd4',
+        amount: 75.00,
+        date: '2025-03-10',
+        destinationAccountId: 'sav1',
+        destinationAccountName: 'Savings Account (ending in 5678)'
+      }
+    ],
   },
 ];
 

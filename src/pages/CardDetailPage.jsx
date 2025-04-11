@@ -1,28 +1,22 @@
-import { useState, useEffect, useMemo, useRef } from 'react'; // Ensure useMemo is included
+import { useState, useEffect, useMemo, useRef, useContext } from 'react'; // Added useContext
 import { useParams, useNavigate, Link } from 'react-router-dom'; // Consolidated imports
 // Make sure BanknotesIcon, ArrowDownTrayIcon, ClockIcon are imported from heroicons
 import {
   CreditCardIcon, LockClosedIcon, LockOpenIcon, // Basic card
-  ClipboardDocumentIcon, ClipboardDocumentCheckIcon, // Copying
-  ArrowPathIcon, // Refresh/Sync/Dispute?
-  ExclamationTriangleIcon, // Warnings
-  BanknotesIcon, ArrowDownTrayIcon, // Rewards, Withdraw
-  ClockIcon, // History, Scheduling
-  BuildingLibraryIcon, // Bank account
-  MapPinIcon, // Travel map
-  PhoneIcon, // Contact
-  InformationCircleIcon, // Info tooltips
-  CheckCircleIcon, XCircleIcon, // Success/Error status
-  EyeIcon, EyeSlashIcon, // Reveal/Hide details
-  CheckIcon, // General checkmark
-  ArrowLeftIcon, // Back navigation
-  CalendarDaysIcon, // Dates, scheduling
+  EyeIcon, EyeSlashIcon, // View/hide sensitive details
+  ArrowRightIcon, ArrowDownTrayIcon, XMarkIcon, // Navigation, downloads, close
+  CheckCircleIcon, BanknotesIcon, FlagIcon, // Status indicators, Money, Report
+  ExclamationTriangleIcon, LockClosedIcon as LockClosedSolidIcon, // Alerts, Lock (solid)
+  GlobeAltIcon, CalendarDaysIcon, ClockIcon, // Travel, Calendar, Clock
+  ArrowLeftIcon, ChevronLeftIcon, ChevronRightIcon, // Navigation
+  SparklesIcon, ArrowPathIcon, PlusIcon, // Rewards, Refresh, Add/Plus
   CurrencyDollarIcon, ReceiptPercentIcon, // Payments, Rewards Rate
   ChevronDownIcon, ChevronUpIcon, // Dropdowns/Expand
   QuestionMarkCircleIcon // Added for Rewards
 } from '@heroicons/react/24/outline';
 // Import mockTransactions and mockBankAccounts if not already done
 import { mockTransactions, mockBankAccounts } from '../data/mockData';
+import { ViewModeContext } from '../App'; // Import ViewModeContext
 import TransactionList from '../components/TransactionList';
 import ConfirmationModal from '../components/ConfirmationModal';
 import TravelNotificationModal from '../components/TravelNotificationModal';
@@ -43,6 +37,8 @@ import CardTransactionListWidget from '../components/CardDetailPage/CardTransact
 function CardDetailPage({ cards, setCards }) {
   const { id } = useParams();
   const numericCardId = parseInt(id);
+  const viewMode = useContext(ViewModeContext); // Access the view mode context
+  const isMobile = viewMode === 'mobile'; // Create a helper flag
 
   // Ref for scrolling to the full payment section
   const paymentSectionRef = useRef(null);
@@ -410,7 +406,7 @@ function CardDetailPage({ cards, setCards }) {
   };
 
   return (
-    <div className="p-4 lg:p-6 max-w-4xl mx-auto">
+    <div className={`p-4 lg:p-6 max-w-4xl mx-auto ${isMobile ? 'px-2' : ''}`}>
       {/* Breadcrumbs */}
       <nav className="text-sm mb-4 text-neutral-dark" aria-label="Breadcrumb">
         <ol className="list-none p-0 inline-flex">
@@ -456,10 +452,11 @@ function CardDetailPage({ cards, setCards }) {
       {/* --- Default View (Before Submission) --- */}
       {!reportSubmitted && (
         <div>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 mb-8">
+          {/* Card Visual Section */}
+          <div className={`grid grid-cols-1 ${isMobile ? '' : 'lg:grid-cols-3'} gap-6 lg:gap-8 mb-6`}>
             {/* Card Visual & Summary Section */}
-            <div className="lg:col-span-1 space-y-4"> {/* Wrap card and summary */}
-              <div className="flex justify-center lg:justify-start"> {/* Keep original centering */}
+            <div className={`space-y-4 ${isMobile ? 'col-span-1' : 'lg:col-span-1'}`}>
+              <div className={`flex ${isMobile ? 'justify-center' : 'justify-center lg:justify-start'}`}>
                 <Card cardData={cardData} />
               </div>
 
@@ -488,7 +485,7 @@ function CardDetailPage({ cards, setCards }) {
                    </button>
                  </div>
                )}
-             </div>
+            </div>
 
             {/* --- Temporarily Commented Out Column 2 for Debugging --- */}
             {/*
@@ -532,30 +529,56 @@ function CardDetailPage({ cards, setCards }) {
              {/* Closing comment marker for the large commented block */}
           </div> {/* Close main grid */}
 
-          {/* Add Rewards Section if Applicable */}
-          {cardData.rewardsRate > 0 && (
-            <RewardsSummaryWidget
+          {/* Card details widget - Full row for mobile */}
+          <div className="mb-6">
+            <CardDetailsWidget
+              cardData={cardData}
+              showSensitive={revealStatus} 
+              copiedField={copiedField}
+              toggleSensitive={toggleSensitive}
+              handleCopyToClipboard={handleCopyToClipboard}
+              formatCardNumber={formatCardNumber}
+            />
+          </div>
+
+          {/* Payment Summary Widget - Full row for mobile */}
+          <div className="mb-6">
+            <PaymentSummaryWidget
               cardData={cardData}
               formatCurrency={formatCurrency}
-              formatDate={formatDate} // Pass formatDate even if widget internally uses date-fns format
-              setShowWithdrawModal={setShowWithdrawModal}
-              showWithdrawalSuccess={showWithdrawalSuccess}
-              totalRewardsEarned={totalRewardsEarned}
+              formatDate={formatDate}
             />
+          </div>
+
+          {/* Add Rewards Section if Applicable - Full row for mobile */}
+          {cardData.rewardsRate > 0 && (
+            <div className="mb-6">
+              <RewardsSummaryWidget
+                cardData={cardData}
+                formatCurrency={formatCurrency}
+                formatDate={formatDate}
+                setShowWithdrawModal={setShowWithdrawModal}
+                showWithdrawalSuccess={showWithdrawalSuccess}
+                totalRewardsEarned={totalRewardsEarned}
+              />
+            </div>
           )}
-          {/* Transaction History & Charts (Dashboard Component) */}
-          <div className="mt-8 lg:mt-10">
+          
+          {/* Transaction History & Charts (Dashboard Component) - Full row */}
+          <div className="mb-6">
             <TransactionDashboardWidget cards={cards} filterCardId={numericCardId} />
           </div>
 
           {/* --- Travel Notifications Display Section (Replaced with Widget) --- */}
-          <TravelNotificationsWidget
-            travelNotifications={travelNotifications}
-            formatDateRange={formatDateRange}
-          />
+          <div className="mb-6">
+            <TravelNotificationsWidget
+              travelNotifications={travelNotifications}
+              formatDateRange={formatDateRange}
+            />
+          </div>
 
           {/* Separator */}
-          <hr className="my-8 lg:my-10 border-neutral-light" />
+          <hr className="my-6 lg:my-8 border-neutral-light" />
 
           {/* Added Transaction List for this card (Replaced with Widget) */}
           <CardTransactionListWidget
