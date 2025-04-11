@@ -328,3 +328,48 @@ This journal tracks the development progress of the Card Management App prototyp
    * Fixed the conditional CSS in the component to properly remove blur when revealed
 
 These fixes ensure that all three sensitive information fields (card number, CVV, and expiry date) correctly implement the 2FA verification flow, starting in a hidden state and only revealing after proper verification.
+
+---
+
+**USER Request (Step 994 & 998):** Implement the withdrawal logic and display the withdrawal history.
+
+**Cascade Action (Steps 996-1000):**
+1.  Updated `handleWithdrawConfirm` in `CardDetailPage.jsx`:
+    *   Added guard clauses for `cardData`, `rewardsBalance > 0`, and `selectedWithdrawalAccount`.
+    *   Fetched `withdrawalAmount` and `destinationAccount` details.
+    *   Created a `newHistoryEntry` object (ID, amount, ISO date, destination string).
+    *   Called `setCards` prop to update the global state: maps over `prevCards`, finds the target card, returns a new card object with `rewardsBalance: 0` and the `newHistoryEntry` added to `rewardsWithdrawalHistory`.
+2.  Added a 'Withdrawal History' section within the 'Rewards Summary' in `CardDetailPage.jsx`:
+    *   Conditionally checks if `cardData.rewardsWithdrawalHistory` has entries.
+    *   If yes, maps over the history (sorted newest first) to render a list (`ul`) of withdrawals.
+    *   Each item (`li`) displays an `ArrowDownTrayIcon`, formatted amount, destination, and formatted date (`MMM d, yyyy`).
+    *   Added `max-h-40 overflow-y-auto` for scrollability.
+    *   If no history, displays 'No withdrawal history yet.'
+3.  Ensured necessary icons (`ArrowDownTrayIcon`, `ClockIcon`) and `format` from `date-fns` were imported.
+
+---
+
+## April 10, 2025 - Resurrecting Report Lost/Stolen and Digital Wallet Features
+
+**USER Request:** Resurrect the "Report Lost", "Report Stolen", "Add to Apple Pay", and "Add to Google Pay" features that were previously implemented but lost during the refactoring.
+
+**Cascade Action:**
+1. **Updated CardDetailsWidget Component**:
+   * Added a new "Card Actions" section at the bottom of the widget
+   * Implemented two distinct areas for security actions (Report Lost/Stolen) and digital wallet actions
+   * Added appropriate icons for each action: ExclamationTriangleIcon for "Report Lost", FlagIcon for "Report Stolen", and DevicePhoneMobileIcon for wallet integrations
+   * Implemented responsive grid layout that adapts to mobile and desktop views
+
+2. **Added Handlers in CardDetailPage**:
+   * Connected the Report Lost button to set `reportType='lost'` and show the report form
+   * Connected the Report Stolen button to set `reportType='stolen'` and show the report form
+   * Passed the existing `handleAddToWallet` function to manage Apple Pay and Google Pay integration
+   * Ensured all buttons trigger appropriate modals and functions
+
+3. **Integration with Existing Forms**:
+   * Reused the existing ReportForm component for handling lost and stolen card reports
+   * Maintained the conditional fields based on report type:
+     * Lost card reports include an option to keep the same card number
+     * Stolen card reports include the ability to dispute recent transactions
+
+This implementation successfully integrates these important security and convenience features back into the application while maintaining the updated design language.
