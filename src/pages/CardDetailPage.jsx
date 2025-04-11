@@ -90,6 +90,9 @@ function CardDetailPage({ cards, setCards }) {
   const [showWalletModal, setShowWalletModal] = useState(false);
   const [selectedWalletType, setSelectedWalletType] = useState('');
   const [walletIntegrationStatus, setWalletIntegrationStatus] = useState([]);
+  
+  // Add missing mobile form modal state
+  const [showMobileFormModal, setShowMobileFormModal] = useState(false);
 
   // --- Calculate Derived Data (useMemo AFTER useState) ---
   const cardData = useMemo(() => {
