@@ -745,35 +745,56 @@ function CardDetailPage({ cards, setCards }) {
               {/* Heading Adjusted */}
               <h3 className="text-lg sm:text-xl lg:text-2xl font-semibold text-neutral-darker mb-4 md:mb-6">Credit Card Payments</h3>
 
-              {/* Payment Summary Recap - Uses LabelValueDisplay (already sized) */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 lg:gap-6 mb-4 lg:mb-6 p-3 md:p-4 lg:p-6 bg-neutral-lightest rounded-md border border-neutral-light">
-                <LabelValueDisplay
-                  label="Minimum Payment"
-                  valueSlot={
-                    <span className="text-lg lg:text-2xl font-semibold text-red-700">{formatCurrency(getCardProperty('minPayment', 0))}</span>
-                  }
-                  labelSize={isMobile ? "text-[9px]" : "text-[10px] sm:text-xs"} // Smaller text on mobile
-                  className="flex flex-col items-start"
-                  labelSlot={!isMobile && <CalendarDaysIcon className="h-3 w-3 sm:h-4 mr-1 text-primary inline-block mb-0.5" />}
-                />
-                <LabelValueDisplay
-                  label="Statement Balance"
-                  valueSlot={
-                    <span className="text-lg lg:text-2xl font-semibold text-blue-700">{formatCurrency(getCardProperty('statementBalance', 0))}</span>
-                  }
-                  labelSize={isMobile ? "text-[9px]" : "text-[10px] sm:text-xs"} // Smaller text on mobile
-                  className="flex flex-col items-start"
-                  labelSlot={!isMobile && <ReceiptPercentIcon className="h-3 w-3 sm:h-4 mr-1 text-blue-600 inline-block mb-0.5" />}
-                />
-                <LabelValueDisplay
-                  label="Payment Due"
-                  valueSlot={
-                    <span className="text-lg lg:text-2xl font-semibold text-neutral-darker">{formatDate(getCardProperty('dueDate'))}</span>
-                  }
-                  labelSize={isMobile ? "text-[9px]" : "text-[10px] sm:text-xs"} // Smaller text on mobile
-                  className="flex flex-col items-start"
-                  labelSlot={!isMobile && <CurrencyDollarIcon className="h-3 w-3 sm:h-4 mr-1 text-red-600 inline-block mb-0.5" />}
-                />
+              {/* Payment Summary Recap with completely redesigned mobile layout */}
+              <div className={`${isMobile ? 'flex flex-col space-y-3' : 'grid grid-cols-3 gap-4 lg:gap-6'} mb-4 lg:mb-6 p-3 md:p-4 lg:p-6 bg-neutral-lightest rounded-md border border-neutral-light`}>
+                {isMobile ? (
+                  <>
+                    {/* Mobile-specific layout with stacked items */}
+                    <div className="flex justify-between items-center">
+                      <span className="text-[9px] font-medium text-neutral-600">Minimum Payment</span>
+                      <span className="text-sm font-semibold text-red-700">{formatCurrency(getCardProperty('minPayment', 0))}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-[9px] font-medium text-neutral-600">Statement Balance</span>
+                      <span className="text-sm font-semibold text-blue-700">{formatCurrency(getCardProperty('statementBalance', 0))}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-[9px] font-medium text-neutral-600">Payment Due</span>
+                      <span className="text-sm font-semibold text-neutral-darker">{formatDate(getCardProperty('dueDate'))}</span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {/* Desktop layout with LabelValueDisplay */}
+                    <LabelValueDisplay
+                      label="Minimum Payment"
+                      valueSlot={
+                        <span className="text-lg lg:text-2xl font-semibold text-red-700">{formatCurrency(getCardProperty('minPayment', 0))}</span>
+                      }
+                      labelSize="text-[10px] sm:text-xs" 
+                      className="flex flex-col items-start"
+                      labelSlot={<CalendarDaysIcon className="h-3 w-3 sm:h-4 mr-1 text-primary inline-block mb-0.5" />}
+                    />
+                    <LabelValueDisplay
+                      label="Statement Balance"
+                      valueSlot={
+                        <span className="text-lg lg:text-2xl font-semibold text-blue-700">{formatCurrency(getCardProperty('statementBalance', 0))}</span>
+                      }
+                      labelSize="text-[10px] sm:text-xs" 
+                      className="flex flex-col items-start"
+                      labelSlot={<ReceiptPercentIcon className="h-3 w-3 sm:h-4 mr-1 text-blue-600 inline-block mb-0.5" />}
+                    />
+                    <LabelValueDisplay
+                      label="Payment Due"
+                      valueSlot={
+                        <span className="text-lg lg:text-2xl font-semibold text-neutral-darker">{formatDate(getCardProperty('dueDate'))}</span>
+                      }
+                      labelSize="text-[10px] sm:text-xs" 
+                      className="flex flex-col items-start"
+                      labelSlot={<CurrencyDollarIcon className="h-3 w-3 sm:h-4 mr-1 text-red-600 inline-block mb-0.5" />}
+                    />
+                  </>
+                )}
               </div> {/* Correct closing tag for the grid div */}
 
               {/* Scheduled Payment Info - Adjusted Sizes */}
