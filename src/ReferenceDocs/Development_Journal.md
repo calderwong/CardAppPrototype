@@ -375,108 +375,6 @@ This journal tracks the development progress of the Card Management App prototyp
 
 ---
 
-## April 10, 2025 - Card Visuals & Detail Page Fixes
-
-**USER Objective:** Enhance card visuals with distinct colors and labels (Debit/Credit). Resolve issues where card numbers weren't displaying correctly.
-
-**USER Observation (Step ~810):** Card background colors were not appearing, showing as white/transparent instead of the intended gradients.
-
-**Cascade Investigation & Fix (Steps 812-826):**
-1.  **Diagnosis:** Reviewed `tailwind.config.js` and `src/index.css`. Determined that while Tailwind scanned the files and recognized the class names (`gradient-blue`, etc.), the actual CSS definitions for these gradients were missing.
-2.  **Action:** Edited `src/index.css` to add standard CSS `linear-gradient` definitions for `.gradient-blue`, `.gradient-purple`, and `.gradient-green`.
-3.  **Linting:** Acknowledged IDE warnings about `@tailwind` and `@apply` as expected and safe to ignore.
-
-**USER Observation (Step 828):** Card numbers (last 4 digits) were missing on the Dashboard view.
-
-**Cascade Investigation & Fix (Steps 830-836):**
-1.  **Data Check:** Verified `mockData.js` still contained `last4` and `fullCardNumber` for all cards.
-2.  **Component Check (`Card.jsx`):** Confirmed the `Card` component logic correctly used `last4` to format the number.
-3.  **Prop Check (`Dashboard.jsx`):** Found the mismatch: `Dashboard.jsx` was passing individual props (`last4`, `holder`, etc.) while `Card.jsx` expected a single `cardData` prop object.
-4.  **Action:** Edited `Dashboard.jsx` to pass the entire `card` object as the `cardData` prop to the `<Card>` component.
-
-**USER Observation (Step 838):** The *full* card number was blank on the `CardDetailPage` after clicking to reveal it (post-2FA simulation).
-
-**Cascade Investigation & Fix (Steps 840-844):**
-1.  **Component Check (`CardDetailPage.jsx`):** Reviewed state (`revealStatus`) and handlers (`handleReveal`, `handleConfirm`).
-2.  **Rendering Logic:** Inspected the JSX responsible for displaying the card number. Found the `<span>` tag intended to show the full number inside the `revealStatus.number === 'revealed'` block was empty.
-3.  **Action:** Edited `CardDetailPage.jsx` to insert `{cardData.fullCardNumber}` into the correct `<span>`.
-4.  **Correction:** Realized the "Copy" button handler next to the revealed number still referenced an incorrect property (`cardData.fullNumber`). Edited `CardDetailPage.jsx` again to update the `handleCopyToClipboard` call to use `cardData.fullCardNumber`.
-
-**Outcome:** Card gradients now display correctly. Card numbers (last 4 on Dashboard, full number on Detail Page reveal) are shown as expected. Checkpoint created (Memory `cca7f6dc-3628-4884-ac0b-ee90cf64d638`).
-
----
-
-*(Journal will be updated below this line)*
-
-**USER Request (Step ~1700):** Enhance the mobile UI design for the Card Detail Page to ensure proper responsiveness and readability.
-
-**Cascade Action (Steps ~1710-1730):**
-1. **Mobile UI Refinements for Card Detail Page:**
-   * Enhanced the layout of `CardDetailsWidget`, `RewardsSummaryWidget`, and `PaymentSummaryWidget` components to be mobile-friendly
-   * Ensured widgets stack vertically on mobile to prevent compressed layouts
-   * Implemented responsive design that adapts based on the current view mode (mobile vs. desktop)
-
-2. **Timeframe Selection UI Improvements:**
-   * Adjusted the layout of the timeframe selection to display the "Spending Period" label above buttons on mobile
-   * Improved visibility and accessibility of selection options
-   * Adjusted spacing for better mobile experience
-
-3. **Dashboard UI Enhancements:**
-   * Updated the chart layout to ensure "Budget Breakdown" and "Spending Over Time" widgets are stacked vertically on mobile
-   * Improved responsiveness of all dashboard elements
-
-**Outcome:** The Card Detail Page and Dashboard now provide an optimized viewing experience across different screen sizes, with particular attention to mobile usability. The layout adjusts dynamically based on the current view mode, ensuring all information remains accessible and well-formatted.
-
----
-
-**USER Request (Step 1749):** Improve the transaction viewing feature by ensuring that clicking on the "View" hyperlink opens a detailed transaction page instead of a blank page.
-
-**Cascade Action (Steps 1751-1763):**
-1. **Creation of Transaction Detail Page:**
-   * Created a new file `TransactionDetailPage.jsx` with a responsive UI for displaying transaction details
-   * Implemented detailed sections for merchant information (name, address, phone), transaction details (date, amount, category), and card used
-   * Added a map placeholder section for transactions with location data
-   * Created color-coded status indicators with appropriate icons
-   * Added a back navigation button and contextual action buttons based on transaction status
-
-2. **App Routing Updates:**
-   * Updated `App.jsx` to add routes for the transaction detail page in both mobile and browser views
-   * Added route `/transaction/:id` to navigate to the transaction detail
-
-3. **Mobile UI Enhancement (Step 1761-1763):**
-   * Redesigned the `TransactionList` component to be mobile-friendly
-   * Replaced the horizontal-scrolling table with a card-based layout for mobile
-   * Used context from `ViewModeContext` to detect mobile vs. desktop view
-   * Maintained the traditional table layout for desktop view
-   * Added icons and improved spacing in the mobile card layout
-
----
-
-**USER Request (Step 1765):** Audit and enhance the mock data to better demonstrate all functionality.
-
-**Cascade Action (Steps 1767-1773):**
-1. **Enhanced Transaction Mock Data:**
-   * Added new transaction status types: Declined, Refunded, and Processing
-   * Added transaction-specific details like decline reasons, refund information, and processing details
-   * Ensured each status type had representative transactions in the mock data
-
-2. **Enhanced Card Information:**
-   * Added complete card details including balances, limits, and payment information
-   * Enhanced interest rates and statement dates
-   * Added rewards withdrawal history records
-   * Included complete information for the locked card status with reason
-
-3. **UI Updates for New Data:**
-   * Updated `TransactionList` to handle and appropriately display new status types
-   * Added color coding and icons specific to each transaction status
-   * Updated `TransactionDetailPage` to show status-specific information panels
-   * Added contextual action buttons based on transaction status (e.g., "Contact Support" for declined transactions)
-   * Added special formatting for refunded transactions
-
-**Outcome:** The transaction viewing feature now provides a comprehensive user experience with detailed transaction information, appropriate status indicators, and a fully responsive design that works well on both mobile and desktop views. The mock data now includes edge cases and various transaction types to better demonstrate all app functionality.
-
----
-
 ## April 10, 2025 - Resurrecting Report Lost/Stolen and Digital Wallet Features
 
 **USER Request:** Resurrect the "Report Lost", "Report Stolen", "Add to Apple Pay", and "Add to Google Pay" features that were previously implemented but lost during the refactoring.
@@ -652,6 +550,14 @@ Both enhancements provide a significantly more realistic and professional user e
 3.  **Version Control:**
     *   Staged and committed the new `README.md` file (`docs: Add comprehensive README.md`).
     *   Staged and committed the updated `README.md` and the new `LICENSE` file (`docs: Update license to MIT and add LICENSE file`).
+
+**Outcome:**
+- The project now has a detailed `README.md` providing essential context and setup instructions.
+- The project is explicitly licensed under the MIT License, both in the `README.md` and a dedicated `LICENSE` file.
+
+4.  **Live Demo Link:**
+    *   Added a prominent link `[➡️ View Live Demo Here ⬅️](https://calderwong.github.io/CardAppPrototype/)` to the top of the `README.md` after deploying to GitHub Pages.
+    *   Staged and committed this change (`docs: Add link to live demo in README`).
 
 **Outcome:**
 - The project now has a detailed `README.md` providing essential context and setup instructions.
