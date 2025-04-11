@@ -752,27 +752,27 @@ function CardDetailPage({ cards, setCards }) {
                   valueSlot={
                     <span className="text-lg lg:text-2xl font-semibold text-red-700">{formatCurrency(getCardProperty('minPayment', 0))}</span>
                   }
-                  labelSize="text-[10px] sm:text-xs" // Extra small label
+                  labelSize={isMobile ? "text-[9px]" : "text-[10px] sm:text-xs"} // Smaller text on mobile
                   className="flex flex-col items-start"
-                  labelSlot={<CalendarDaysIcon className="h-3 w-3 sm:h-4 mr-1 text-primary inline-block mb-0.5" />}
+                  labelSlot={!isMobile && <CalendarDaysIcon className="h-3 w-3 sm:h-4 mr-1 text-primary inline-block mb-0.5" />}
                 />
                 <LabelValueDisplay
                   label="Statement Balance"
                   valueSlot={
                     <span className="text-lg lg:text-2xl font-semibold text-blue-700">{formatCurrency(getCardProperty('statementBalance', 0))}</span>
                   }
-                  labelSize="text-[10px] sm:text-xs" // Extra small label
+                  labelSize={isMobile ? "text-[9px]" : "text-[10px] sm:text-xs"} // Smaller text on mobile
                   className="flex flex-col items-start"
-                  labelSlot={<ReceiptPercentIcon className="h-3 w-3 sm:h-4 mr-1 text-blue-600 inline-block mb-0.5" />}
+                  labelSlot={!isMobile && <ReceiptPercentIcon className="h-3 w-3 sm:h-4 mr-1 text-blue-600 inline-block mb-0.5" />}
                 />
                 <LabelValueDisplay
                   label="Payment Due"
                   valueSlot={
                     <span className="text-lg lg:text-2xl font-semibold text-neutral-darker">{formatDate(getCardProperty('dueDate'))}</span>
                   }
-                  labelSize="text-[10px] sm:text-xs" // Extra small label
+                  labelSize={isMobile ? "text-[9px]" : "text-[10px] sm:text-xs"} // Smaller text on mobile
                   className="flex flex-col items-start"
-                  labelSlot={<CurrencyDollarIcon className="h-3 w-3 sm:h-4 mr-1 text-red-600 inline-block mb-0.5" />}
+                  labelSlot={!isMobile && <CurrencyDollarIcon className="h-3 w-3 sm:h-4 mr-1 text-red-600 inline-block mb-0.5" />}
                 />
               </div> {/* Correct closing tag for the grid div */}
 
