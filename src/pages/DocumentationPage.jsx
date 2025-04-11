@@ -8,6 +8,7 @@ import prdContent from '../ReferenceDocs/CardApp_ProductRequirementDoc.md?raw';
 import designContent from '../ReferenceDocs/CardApp_DesignBrief.md?raw';
 import researchContent from '../ReferenceDocs/CardApp_research.md?raw';
 import journalContent from '../ReferenceDocs/Development_Journal.md?raw';
+import backendContent from '../ReferenceDocs/Connecting_to_a_backend.md?raw';
 
 
 // Define metadata for each document, now including the pre-loaded content
@@ -36,6 +37,12 @@ const docsMetadata = [
     title: 'Development Journal',
     summary: 'A chronological log detailing the development process. It records user requests verbatim and summarizes the actions taken by the AI assistant (Cascade) to implement those features or address issues. This document tracks progress and provides context for the project evolution.',
     content: journalContent, // Store imported content
+  },
+  {
+    id: 'backend',
+    title: 'Connecting to a Backend',
+    summary: 'A comprehensive guide detailing all the points where the frontend application would need to connect to backend services. Includes API endpoint specifications, request/response examples, and implementation considerations for authentication, card management, transactions, analytics, rewards, payments, and security features.',
+    content: backendContent, // Store imported content
   },
 ];
 

@@ -21,88 +21,87 @@ function RewardsSummaryWidget({
     : [];
 
   return (
-    <div className={`bg-white ${isMobile ? 'p-4' : 'p-6 lg:p-8'} rounded-lg shadow-lg border border-green-200 ${isMobile ? 'mt-3' : 'mt-6'}`}> 
-      <h3 className={`${isMobile ? 'text-base' : 'text-md lg:text-lg'} font-semibold text-neutral-darker mb-3`}>Rewards Summary</h3>
+    <div className="bg-white p-5 rounded-xl shadow-md border border-green-200">
+      <h3 className="text-lg font-semibold text-neutral-darker mb-4">Rewards Summary</h3>
+      
+      {/* Success Message */}
       {showWithdrawalSuccess && (
-        <div className="mb-2 sm:mb-3 p-2 bg-green-50 border border-green-200 rounded-md text-xs flex items-center">
-          <CheckCircleIcon className="h-4 mr-1 text-green-600" />
-          Rewards successfully withdrawn!
+        <div className="mb-4 p-2 bg-green-50 border border-green-200 rounded-md flex items-center">
+          <CheckCircleIcon className="h-4 w-4 mr-2 text-green-600" />
+          <span className="text-sm text-green-700 font-medium">Rewards successfully withdrawn!</span>
         </div>
       )}
-      <div className="space-y-3 lg:space-y-4 text-sm lg:text-base">
-        {/* Current Balance */}
-        <LabelValueDisplay 
-          label="Current Balance:" 
-          valueSlot={
-            <span className={`${isMobile ? 'text-base' : 'text-lg lg:text-2xl'} font-semibold text-green-700`}>
-              {formatCurrency(cardData.rewardsBalance || 0)}
-            </span>
-          } 
-          labelSize={`${isMobile ? 'text-xs' : 'text-[11px] sm:text-xs lg:text-sm'}`}
-          className="flex items-center space-x-1 sm:space-x-2" // Added flex for icon
-          labelSlot={<BanknotesIcon className={`${isMobile ? 'h-4' : 'h-5 sm:h-6'} text-green-600 inline-block`} />}
-        />
-
-        {/* Rewards Rate */}
-        <LabelValueDisplay 
-          label="Rewards Rate:" 
-          valueSlot={
-            <span className={`${isMobile ? 'text-base' : 'text-lg lg:text-2xl'} font-semibold text-blue-700`}>
-              {(cardData.rewardsRate * 100).toFixed(1)}%
-            </span>
-          } 
-          labelSize={`${isMobile ? 'text-xs' : 'text-[11px] sm:text-xs lg:text-sm'}`}
-          className="flex items-center space-x-1 sm:space-x-2" // Added flex for icon
-          labelSlot={<ReceiptPercentIcon className={`${isMobile ? 'h-4' : 'h-5 sm:h-6'} text-blue-600 inline-block`} />}
-        />
-
-        {/* Total Potential Earned (Contextual) */}
-        <div className="flex justify-between items-center text-xs sm:text-sm text-neutral-500 pt-2 border-t border-neutral-100 mt-2 lg:mt-4">
+      
+      {/* Current Balance */}
+      <div className="mb-4">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center">
+            <BanknotesIcon className="h-4 w-4 mr-2 text-green-600" />
+            <span className="text-sm text-neutral-600 font-medium">Current Balance:</span>
+          </div>
+          <span className="text-lg font-semibold text-green-700">
+            {formatCurrency(cardData.rewardsBalance || 0)}
+          </span>
+        </div>
+      </div>
+      
+      {/* Rewards Rate */}
+      <div className="mb-4">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center">
+            <ReceiptPercentIcon className="h-4 w-4 mr-2 text-blue-600" />
+            <span className="text-sm text-neutral-600 font-medium">Rewards Rate:</span>
+          </div>
+          <span className="text-lg font-semibold text-blue-700">
+            {(cardData.rewardsRate * 100).toFixed(1)}%
+          </span>
+        </div>
+      </div>
+      
+      {/* Total Potential Earned */}
+      <div className="mb-4">
+        <div className="flex justify-between items-center text-sm text-neutral-500">
           <span>Total potential rewards from completed transactions:</span>
           <span>~{formatCurrency(totalRewardsEarned)}</span>
         </div>
+      </div>
 
-        {/* Withdraw Button */}
-        <div className="pt-3 lg:pt-4">
-          <button
-            onClick={() => setShowWithdrawModal(true)}
-            disabled={!cardData.rewardsBalance || cardData.rewardsBalance <= 0} // Disable if no balance
-            className={`w-full flex items-center justify-center px-3 py-1.5 border border-transparent ${isMobile ? 'text-xs' : 'text-xs sm:text-sm'} font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed`}
-          >
-            <ArrowDownTrayIcon className="h-4 mr-1" />
-            Withdraw Rewards
-          </button>
-        </div>
+      {/* Withdraw Button */}
+      <div className="mb-5">
+        <button
+          onClick={() => setShowWithdrawModal(true)}
+          disabled={!cardData.rewardsBalance || cardData.rewardsBalance <= 0}
+          className="w-full flex items-center justify-center px-3 py-2 rounded-lg text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition duration-200"
+        >
+          <ArrowDownTrayIcon className="h-4 w-4 mr-2" />
+          Withdraw Rewards
+        </button>
+      </div>
 
-        {/* Withdrawal History Section */}
-        <div className={`${isMobile ? 'mt-4 pt-3' : 'mt-6 lg:mt-8 pt-4'} border-t border-neutral-100`}>
-          {/* History Heading Adjusted */}
-          <h4 className={`${isMobile ? 'text-sm' : 'text-sm sm:text-base'} font-semibold text-neutral-darker mb-2 flex items-center`}>
-            <ClockIcon className={`${isMobile ? 'h-3' : 'h-4 sm:h-5'} mr-1 text-neutral-500`} />
-            Withdrawal History
-          </h4>
-          {sortedWithdrawalHistory.length > 0 ? (
-            <ul className={`space-y-2 ${isMobile ? 'max-h-32' : 'max-h-40 sm:max-h-48'} overflow-y-auto pr-1`}>
-              {sortedWithdrawalHistory.map((withdrawal) => (
-                  /* List Item Text Adjusted */
-                  <li key={withdrawal.id} className={`flex items-center justify-between ${isMobile ? 'text-[10px]' : 'text-[10px] sm:text-xs lg:text-sm'} border-b border-neutral-100 pb-1`}>
-                    <div className="flex items-center">
-                      <BuildingLibraryIcon className={`${isMobile ? 'h-3' : 'h-3 sm:h-4'} mr-1 text-neutral-400 flex-shrink-0`} />
-                      <span className="text-neutral-700 break-words">
-                        <span className="font-medium text-green-700">{formatCurrency(withdrawal.amount)}</span> to {withdrawal.destinationAccount}
-                      </span>
-                    </div>
-                    {/* Date Text Adjusted */}
-                    <span className="text-neutral-500 whitespace-nowrap ml-1">{format(new Date(withdrawal.date), 'MMM d, yy')}</span>
-                  </li>
-                ))}
-            </ul>
-          ) : (
-            /* Empty State Text Adjusted */
-            <p className={`${isMobile ? 'text-[10px]' : 'text-[11px] sm:text-xs lg:text-sm'} text-neutral-500 italic`}>No withdrawal history yet.</p>
-          )}
-        </div>
-
+      {/* Withdrawal History Section */}
+      <div className="pt-4 border-t border-neutral-100">
+        <h4 className="text-sm font-semibold text-neutral-darker mb-2 flex items-center">
+          <ClockIcon className="h-4 w-4 mr-2 text-neutral-500" />
+          Withdrawal History
+        </h4>
+        
+        {sortedWithdrawalHistory.length > 0 ? (
+          <ul className="space-y-2 max-h-40 overflow-y-auto pr-1">
+            {sortedWithdrawalHistory.map((withdrawal) => (
+              <li key={withdrawal.id} className="flex items-center justify-between text-xs border-b border-neutral-100 pb-2">
+                <div className="flex items-center">
+                  <BuildingLibraryIcon className="h-3 w-3 mr-1 text-neutral-400 flex-shrink-0" />
+                  <span className="text-neutral-700">
+                    <span className="font-medium text-green-700">{formatCurrency(withdrawal.amount)}</span> to {withdrawal.destinationAccount}
+                  </span>
+                </div>
+                <span className="text-neutral-500 whitespace-nowrap ml-1">{format(new Date(withdrawal.date), 'MMM d, yy')}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-xs text-neutral-500 italic">No withdrawal history yet.</p>
+        )}
       </div>
     </div>
   );

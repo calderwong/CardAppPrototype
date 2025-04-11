@@ -276,7 +276,7 @@ function Dashboard({ cards, filterCardId = null }) {
   const isDailyView = timeframe === 'TM' || timeframe === 'LM';
 
   return (
-    <div className="space-y-8"> {/* Main container div */} 
+    <div className="space-y-8 p-4 rounded-2xl shadow-md"> {/* Main container div */} 
       {/* Top Cards - Only show if NOT on Card Detail Page */} 
       {!filterCardId && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -304,7 +304,7 @@ function Dashboard({ cards, filterCardId = null }) {
                 <button
                   key={tf}
                   onClick={() => setTimeframe(tf)}
-                  className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
+                  className={`px-3 py-1 rounded-2xl text-xs font-medium transition-colors ${
                     timeframe === tf ? 'bg-primary text-white' : 'bg-neutral-light text-neutral-dark hover:bg-neutral-medium'
                   }`}
                 >
@@ -321,7 +321,7 @@ function Dashboard({ cards, filterCardId = null }) {
               <button
                 key={tf}
                 onClick={() => setTimeframe(tf)}
-                className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
+                className={`px-3 py-1 rounded-2xl text-xs font-medium transition-colors ${
                   timeframe === tf ? 'bg-primary text-white' : 'bg-neutral-light text-neutral-dark hover:bg-neutral-medium'
                 }`}
               >
@@ -335,7 +335,7 @@ function Dashboard({ cards, filterCardId = null }) {
       {/* Charts Row - Updated to stack vertically on mobile */} 
       <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-5'} gap-6`}>
         {/* Budget Pie Chart - Full width on mobile, 2/5 width on desktop */} 
-        <div className={`${isMobile ? 'col-span-1' : 'lg:col-span-2'} bg-white p-4 lg:p-6 rounded-lg shadow-md`}>
+        <div className={`${isMobile ? 'col-span-1' : 'lg:col-span-2'} bg-white p-4 lg:p-6 rounded-2xl shadow-md`}>
           <h3 className="text-lg font-semibold text-neutral-darker mb-1">Budget Breakdown</h3>
           <p className="text-sm text-neutral-dark mb-4">Total Spent ({timeframeLabel(timeframe)}): {formatCurrency(totalSpendingForPeriod)}</p>
           <ResponsiveContainer width="100%" height={300}>
@@ -378,7 +378,7 @@ function Dashboard({ cards, filterCardId = null }) {
         </div>
 
         {/* Spending Timeline Chart - Full width on mobile, 3/5 width on desktop */} 
-        <div className={`${isMobile ? 'col-span-1' : 'lg:col-span-3'} bg-white p-4 lg:p-6 rounded-lg shadow-md`}>
+        <div className={`${isMobile ? 'col-span-1' : 'lg:col-span-3'} bg-white p-4 lg:p-6 rounded-2xl shadow-md`}>
           <h3 className="text-lg font-semibold text-neutral-darker mb-6">Spending Over Time ({timeframeLabel(timeframe)})</h3>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart

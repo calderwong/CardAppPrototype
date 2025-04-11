@@ -26,70 +26,87 @@ const PaymentSummaryWidget = ({ cardData, formatCurrency, formatDate }) => {
   } = cardData || {};
 
   return (
-    <div className={`bg-white ${isMobile ? 'p-4' : 'p-6 lg:p-8'} rounded-lg shadow-lg border border-neutral-200`}>
-      <h3 className={`${isMobile ? 'text-base' : 'text-lg lg:text-2xl'} font-semibold text-neutral-darker mb-3`}>Payment Summary</h3>
-      <div className={`${isMobile ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'} grid gap-3 lg:gap-4`}>
-        {/* Column 1: Core Payment Info */}
-        <div className="space-y-2 lg:space-y-4">
-          <LabelValueDisplay
-            label="Statement Balance"
-            value={formatCurrency(statementBalance)}
-            labelSlot={<ReceiptPercentIcon className={`${isMobile ? 'h-3.5' : 'h-4'} w-4 mr-1.5 text-neutral-400`} />}
-            className="flex justify-between items-center"
-          />
-          <LabelValueDisplay
-            label="Minimum Payment"
-            value={formatCurrency(minPayment)}
-            labelSlot={<BanknotesIcon className={`${isMobile ? 'h-3.5' : 'h-4'} w-4 mr-1.5 text-neutral-400`} />}
-            className="flex justify-between items-center"
-          />
-          <LabelValueDisplay
-            label="Payment Due Date"
-            value={paymentDueDate ? formatDate(paymentDueDate) : 'N/A'}
-            labelSlot={<CalendarDaysIcon className={`${isMobile ? 'h-3.5' : 'h-4'} w-4 mr-1.5 text-neutral-400`} />}
-            className="flex justify-between items-center"
-          />
-        </div>
-
-        {/* Column 2: Autopay & Last Payment */}
-        <div className="space-y-2 lg:space-y-4">
-          <LabelValueDisplay
-            label="Autopay Status"
-            labelSlot={<ClockIcon className={`${isMobile ? 'h-3.5' : 'h-4'} w-4 mr-1.5 text-neutral-400`} />}
-            className="flex justify-between items-center"
-            valueSlot={
-              <span className={`flex items-center ${isMobile ? 'text-xs' : 'text-xs lg:text-sm'} font-medium ${autopayStatus ? 'text-green-600' : 'text-red-600'}`}>
-                {autopayStatus ? (
-                  <CheckCircleIcon className={`${isMobile ? 'h-3.5' : 'h-4'} w-4 mr-1`} />
-                ) : (
-                  <XCircleIcon className={`${isMobile ? 'h-3.5' : 'h-4'} w-4 mr-1`} />
-                )}
-                {autopayStatus ? 'On' : 'Off'}
-              </span>
-            }
-          />
-          <LabelValueDisplay
-            label="Last Payment"
-            labelSlot={<InformationCircleIcon className={`${isMobile ? 'h-3.5' : 'h-4'} w-4 mr-1.5 text-neutral-400`} />}
-            className="flex justify-between items-center"
-            valueSlot={
-              lastPaymentDate ? (
-                <span className={`${isMobile ? 'text-xs' : 'text-xs lg:text-sm'} text-right`}>
-                  {formatCurrency(lastPaymentAmount)} on {formatDate(lastPaymentDate)}
-                </span>
-              ) : (
-                <span className={`${isMobile ? 'text-xs' : 'text-xs lg:text-sm'} text-neutral-500 italic`}>No recent payments</span>
-              )
-            }
-          />
-          {/* Placeholder for potential future actions like 'Make Payment' button */}
-          <div></div> 
+    <div className="bg-white p-5 rounded-xl shadow-md border border-neutral-200">
+      <h3 className="text-lg font-semibold text-neutral-darker mb-4">Payment Summary</h3>
+      
+      {/* Statement Balance */}
+      <div className="mb-4">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center">
+            <ReceiptPercentIcon className="h-4 w-4 mr-2 text-neutral-500" />
+            <span className="text-sm text-neutral-600 font-medium">Statement Balance</span>
+          </div>
+          <span className="text-md font-semibold text-neutral-800">{formatCurrency(statementBalance)}</span>
         </div>
       </div>
-      {/* Optional: Add Make Payment button or other actions here */}
-       {/* <div className="mt-6 text-center">
-         <button className="btn btn-primary btn-sm lg:btn-md">Make a Payment</button>
-       </div> */}
+      
+      {/* Autopay Status */}
+      <div className="mb-4">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center">
+            <ClockIcon className="h-4 w-4 mr-2 text-neutral-500" />
+            <span className="text-sm text-neutral-600 font-medium">Autopay Status</span>
+          </div>
+          <span className={`flex items-center text-sm font-medium ${autopayStatus ? 'text-green-600' : 'text-red-600'}`}>
+            {autopayStatus ? (
+              <CheckCircleIcon className="h-4 w-4 mr-1" />
+            ) : (
+              <XCircleIcon className="h-4 w-4 mr-1" />
+            )}
+            {autopayStatus ? 'On' : 'Off'}
+          </span>
+        </div>
+      </div>
+      
+      {/* Minimum Payment */}
+      <div className="mb-4">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center">
+            <BanknotesIcon className="h-4 w-4 mr-2 text-neutral-500" />
+            <span className="text-sm text-neutral-600 font-medium">Minimum Payment</span>
+          </div>
+          <span className="text-md font-semibold text-neutral-800">{formatCurrency(minPayment)}</span>
+        </div>
+      </div>
+      
+      {/* Last Payment */}
+      <div className="mb-4">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center">
+            <InformationCircleIcon className="h-4 w-4 mr-2 text-neutral-500" />
+            <span className="text-sm text-neutral-600 font-medium">Last Payment</span>
+          </div>
+          {lastPaymentDate ? (
+            <span className="text-sm text-neutral-600">
+              {formatCurrency(lastPaymentAmount)} on {formatDate(lastPaymentDate)}
+            </span>
+          ) : (
+            <span className="text-sm text-neutral-500 italic">No recent payments</span>
+          )}
+        </div>
+      </div>
+      
+      {/* Payment Due Date */}
+      <div className="mb-2">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center">
+            <CalendarDaysIcon className="h-4 w-4 mr-2 text-neutral-500" />
+            <span className="text-sm text-neutral-600 font-medium">Payment Due Date</span>
+          </div>
+          <div className="flex flex-col items-end">
+            <span className="text-md font-semibold text-neutral-800">
+              {paymentDueDate ? formatDate(paymentDueDate) : 'N/A'}
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      {/* Optional: Make Payment button */}
+      {/* <div className="mt-5">
+        <button className="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-2 rounded-lg transition duration-200 text-sm">
+          Make a Payment
+        </button>
+      </div> */}
     </div>
   );
 };

@@ -204,6 +204,75 @@ This journal tracks the development progress of the Card Management App prototyp
 
 *(Journal will be updated below this line)*
 
+**USER Request (Step ~1700):** Enhance the mobile UI design for the Card Detail Page to ensure proper responsiveness and readability.
+
+**Cascade Action (Steps ~1710-1730):**
+1. **Mobile UI Refinements for Card Detail Page:**
+   * Enhanced the layout of `CardDetailsWidget`, `RewardsSummaryWidget`, and `PaymentSummaryWidget` components to be mobile-friendly
+   * Ensured widgets stack vertically on mobile to prevent compressed layouts
+   * Implemented responsive design that adapts based on the current view mode (mobile vs. desktop)
+
+2. **Timeframe Selection UI Improvements:**
+   * Adjusted the layout of the timeframe selection to display the "Spending Period" label above buttons on mobile
+   * Improved visibility and accessibility of selection options
+   * Adjusted spacing for better mobile experience
+
+3. **Dashboard UI Enhancements:**
+   * Updated the chart layout to ensure "Budget Breakdown" and "Spending Over Time" widgets are stacked vertically on mobile
+   * Improved responsiveness of all dashboard elements
+
+**Outcome:** The Card Detail Page and Dashboard now provide an optimized viewing experience across different screen sizes, with particular attention to mobile usability. The layout adjusts dynamically based on the current view mode, ensuring all information remains accessible and well-formatted.
+
+---
+
+**USER Request (Step 1749):** Improve the transaction viewing feature by ensuring that clicking on the "View" hyperlink opens a detailed transaction page instead of a blank page.
+
+**Cascade Action (Steps 1751-1763):**
+1. **Creation of Transaction Detail Page:**
+   * Created a new file `TransactionDetailPage.jsx` with a responsive UI for displaying transaction details
+   * Implemented detailed sections for merchant information (name, address, phone), transaction details (date, amount, category), and card used
+   * Added a map placeholder section for transactions with location data
+   * Created color-coded status indicators with appropriate icons
+   * Added a back navigation button and contextual action buttons based on transaction status
+
+2. **App Routing Updates:**
+   * Updated `App.jsx` to add routes for the transaction detail page in both mobile and browser views
+   * Added route `/transaction/:id` to navigate to the transaction detail
+
+3. **Mobile UI Enhancement (Step 1761-1763):**
+   * Redesigned the `TransactionList` component to be mobile-friendly
+   * Replaced the horizontal-scrolling table with a card-based layout for mobile
+   * Used context from `ViewModeContext` to detect mobile vs. desktop view
+   * Maintained the traditional table layout for desktop view
+   * Added icons and improved spacing in the mobile card layout
+
+---
+
+**USER Request (Step 1765):** Audit and enhance the mock data to better demonstrate all functionality.
+
+**Cascade Action (Steps 1767-1773):**
+1. **Enhanced Transaction Mock Data:**
+   * Added new transaction status types: Declined, Refunded, and Processing
+   * Added transaction-specific details like decline reasons, refund information, and processing details
+   * Ensured each status type had representative transactions in the mock data
+
+2. **Enhanced Card Information:**
+   * Added complete card details including balances, limits, and payment information
+   * Enhanced interest rates and statement dates
+   * Added rewards withdrawal history records
+   * Included complete information for the locked card status with reason
+
+3. **UI Updates for New Data:**
+   * Updated `TransactionList` to handle and appropriately display new status types
+   * Added color coding and icons specific to each transaction status
+   * Updated `TransactionDetailPage` to show status-specific information panels
+   * Added conditional action buttons based on transaction status (e.g., "Contact Support" for declined transactions)
+   * Added special formatting for refunded transactions
+
+**Outcome:** The transaction viewing feature now provides a comprehensive user experience with detailed transaction information, appropriate status indicators, and a fully responsive design that works well on both mobile and desktop views. The mock data now includes edge cases and various transaction types to better demonstrate all app functionality.
+
+---
+
 **USER Request (Step 973):** Add dummy bank accounts and a selector to the withdrawal modal.
 **USER Request (Step 979):** Add a 'Withdrawal Success!' message after submission.
 
@@ -234,3 +303,5 @@ This journal tracks the development progress of the Card Management App prototyp
     *   Added `max-h-40 overflow-y-auto` for scrollability.
     *   If no history, displays 'No withdrawal history yet.'
 3.  Ensured necessary icons (`ArrowDownTrayIcon`, `ClockIcon`) and `format` from `date-fns` were imported.
+
+---

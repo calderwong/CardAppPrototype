@@ -57,7 +57,7 @@ function CardDetailPage({ cards, setCards }) {
   const [showTravelModal, setShowTravelModal] = useState(false);
   const [travelNotifications, setTravelNotifications] = useState([]);
   const [copiedField, setCopiedField] = useState(null);
-  const [revealStatus, setRevealStatus] = useState({ number: 'hidden', cvv: 'hidden' });
+  const [revealStatus, setRevealStatus] = useState({ number: 'hidden', cvv: 'hidden', expiry: 'hidden' });
   // Payment related state
   const [paymentTypeToSchedule, setPaymentTypeToSchedule] = useState('Minimum');
   const [autoPaySelection, setAutoPaySelection] = useState('Minimum');
@@ -94,7 +94,7 @@ function CardDetailPage({ cards, setCards }) {
     if (!cardData) return; // Don't run if cardData is not yet available
 
     // Reset general state
-    setRevealStatus({ number: 'hidden', cvv: 'hidden' });
+    setRevealStatus({ number: 'hidden', cvv: 'hidden', expiry: 'hidden' });
     setCopiedField(null);
     setShowReportForm(false);
     // Reset lock/freeze based on actual card data
@@ -452,141 +452,188 @@ function CardDetailPage({ cards, setCards }) {
       {/* --- Default View (Before Submission) --- */}
       {!reportSubmitted && (
         <div>
-          {/* Card Visual Section */}
-          <div className={`grid grid-cols-1 ${isMobile ? '' : 'lg:grid-cols-3'} gap-6 lg:gap-8 mb-6`}>
-            {/* Card Visual & Summary Section */}
-            <div className={`space-y-4 ${isMobile ? 'col-span-1' : 'lg:col-span-1'}`}>
-              <div className={`flex ${isMobile ? 'justify-center' : 'justify-center lg:justify-start'}`}>
+          {/* Conditional rendering based on view mode */}
+          {isMobile ? (
+            <>
+              {/* MOBILE VIEW - Stacked layout (unchanged) */}
+              <div className="mb-6 flex justify-center">
                 <Card cardData={cardData} />
               </div>
-
-              {/* --- NEW Payment Summary Widget --- */}
-               {cardData.accountType === 'Credit' && (
-                 <div className="bg-white p-4 lg:p-6 rounded-lg shadow-lg mt-4 border border-neutral-200">
-                   <h4 className="text-md lg:text-lg font-semibold text-neutral-darker mb-3 lg:mb-4">Payment Summary</h4>
-                   <div className="space-y-2 text-xs sm:text-sm lg:text-base mb-4">
-                     <div className="flex justify-between">
-                       <span className="text-neutral-dark">Card Holder</span>
-                       <span className="font-medium text-neutral-darker">{cardData.cardHolder}</span>
-                     </div>
-                     <div className="flex justify-between items-start">
-                       <span className="text-neutral-dark pt-1">Card Number</span>
-                       <div className="text-right">
-                         {/* Assuming cardData.fullCardNumber exists; if not, use formatted */}
-                         <p className="text-md lg:text-lg font-mono text-neutral-darker">{cardData.fullCardNumber ? formatCardNumber(cardData.fullCardNumber) : '**** **** **** ' + cardData.last4}</p>
-                       </div>
-                     </div>
-                   </div>
-                   <button
-                     onClick={handleScrollToPayments}
-                     className="w-full bg-secondary hover:bg-secondary-dark text-white font-semibold py-2 lg:py-3 px-4 lg:px-6 rounded-lg transition duration-200 text-sm lg:text-base mt-3"
-                   >
-                     View Full Payment Details
-                   </button>
-                 </div>
-               )}
-            </div>
-
-            {/* --- Temporarily Commented Out Column 2 for Debugging --- */}
-            {/*
-            <div className="lg:col-span-2 space-y-6"> {/* Keep this as the second column */}
-              {/* <div className="flex space-x-4"> {/* Container for Lost/Stolen */}
-                {/* <button
-                  onClick={() => { setReportType('lost'); setShowReportForm(true); }}
-                  className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 lg:py-3 px-4 lg:px-6 rounded-lg transition duration-200 text-sm lg:text-base disabled:opacity-50"
-                  disabled={isLocked || reportSubmitted}
-                >
-                  Report Lost
-                </button>
-                <button
-                  onClick={() => { setReportType('stolen'); setShowReportForm(true); }}
-                  className="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 lg:py-3 px-4 lg:px-6 rounded-lg transition duration-200 text-sm lg:text-base disabled:opacity-50"
-                  disabled={isLocked || reportSubmitted}
-                >
-                  Report Stolen
-                </button>
-              </div> {/* Close container for Lost/Stolen */}
-              {/* --- Travel Notification Button --- */}
-              {/* <div className="mt-4">
-                <button
-                  onClick={() => setShowTravelModal(true)}
-                  className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 lg:py-3 px-4 lg:px-6 rounded-lg transition duration-200 text-sm lg:text-base"
-                >
-                  Add Travel Notification
-                </button>
-                <p className="text-xs lg:text-sm text-neutral-dark mt-1 text-center">Going somewhere? Let us know!</p>
-              </div> */}
-              {/* --- Card Details Section (Moved Here) --- */}
-              {/* <CardDetailsWidget
-                 cardData={cardData}
-                 showSensitive={revealStatus} // Use correct state variable name
-                 copiedField={copiedField}
-                 toggleSensitive={toggleSensitive} // Pass the correct handler
-                 handleCopyToClipboard={handleCopyToClipboard}
-                 formatCardNumber={formatCardNumber}
-               /> */}
-            {/* </div> {/* Close lg:col-span-2 wrapper */}
-             {/* Closing comment marker for the large commented block */}
-          </div> {/* Close main grid */}
-
-          {/* Card details widget - Full row for mobile */}
-          <div className="mb-6">
-            <CardDetailsWidget
-              cardData={cardData}
-              showSensitive={revealStatus} 
-              copiedField={copiedField}
-              toggleSensitive={toggleSensitive}
-              handleCopyToClipboard={handleCopyToClipboard}
-              formatCardNumber={formatCardNumber}
-            />
-          </div>
-
-          {/* Payment Summary Widget - Full row for mobile */}
-          <div className="mb-6">
-            <PaymentSummaryWidget
-              cardData={cardData}
-              formatCurrency={formatCurrency}
-              formatDate={formatDate}
-            />
-          </div>
-
-          {/* Add Rewards Section if Applicable - Full row for mobile */}
-          {cardData.rewardsRate > 0 && (
-            <div className="mb-6">
-              <RewardsSummaryWidget
-                cardData={cardData}
-                formatCurrency={formatCurrency}
-                formatDate={formatDate}
-                setShowWithdrawModal={setShowWithdrawModal}
-                showWithdrawalSuccess={showWithdrawalSuccess}
-                totalRewardsEarned={totalRewardsEarned}
-              />
-            </div>
+              
+              {cardData.accountType === 'Credit' && (
+                <div className="bg-white p-4 rounded-lg shadow-lg mb-6 border border-neutral-200">
+                  <h4 className="text-md font-semibold text-neutral-darker mb-3">Payment Summary</h4>
+                  <div className="space-y-2 text-xs sm:text-sm mb-4">
+                    <div className="flex justify-between">
+                      <span className="text-neutral-dark">Card Holder</span>
+                      <span className="font-medium text-neutral-darker">{cardData.cardHolder}</span>
+                    </div>
+                    <div className="flex justify-between items-start">
+                      <span className="text-neutral-dark pt-1">Card Number</span>
+                      <div className="text-right">
+                        <p className="text-md font-mono text-neutral-darker">{cardData.fullCardNumber ? formatCardNumber(cardData.fullCardNumber) : '**** **** **** ' + cardData.last4}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleScrollToPayments}
+                    className="w-full bg-secondary hover:bg-secondary-dark text-white font-semibold py-2 px-4 rounded-lg transition duration-200 text-sm mt-3"
+                  >
+                    View Full Payment Details
+                  </button>
+                </div>
+              )}
+              
+              <div className="mb-6">
+                <CardDetailsWidget
+                  cardData={cardData}
+                  showSensitive={revealStatus} 
+                  copiedField={copiedField}
+                  toggleSensitive={toggleSensitive}
+                  handleCopyToClipboard={handleCopyToClipboard}
+                  formatCardNumber={formatCardNumber}
+                />
+              </div>
+              
+              <div className="mb-6">
+                <PaymentSummaryWidget
+                  cardData={cardData}
+                  formatCurrency={formatCurrency}
+                  formatDate={formatDate}
+                />
+              </div>
+              
+              {cardData.rewardsRate > 0 && (
+                <div className="mb-6">
+                  <RewardsSummaryWidget
+                    cardData={cardData}
+                    formatCurrency={formatCurrency}
+                    formatDate={formatDate}
+                    setShowWithdrawModal={setShowWithdrawModal}
+                    showWithdrawalSuccess={showWithdrawalSuccess}
+                    totalRewardsEarned={totalRewardsEarned}
+                  />
+                </div>
+              )}
+              
+              <div className="mb-6">
+                <TravelNotificationsWidget
+                  travelNotifications={travelNotifications}
+                  formatDateRange={formatDateRange}
+                />
+              </div>
+              
+              <div className="mb-6">
+                <TransactionDashboardWidget cards={cards} filterCardId={numericCardId} />
+              </div>
+            </>
+          ) : (
+            <>
+              {/* BROWSER VIEW - Optimized layout */}
+              {/* Row 1: Card Image & Card Details with flexible column widths */}
+              <div className="flex flex-wrap mb-6">
+                {/* Column 1: Card Image + Quick Access - Fixed width based on card dimensions */}
+                <div style={{ width: "340px" }} className="pr-6">
+                  {/* Container to maintain card aspect ratio */}
+                  <div className="mb-4">
+                    <Card cardData={cardData} />
+                  </div>
+                  
+                  {/* Quick Access Panel */}
+                  {cardData.accountType === 'Credit' && (
+                    <div className="bg-white p-4 rounded-xl shadow-md border border-neutral-200 mb-4">
+                      <h4 className="text-md font-semibold text-neutral-darker mb-2">Quick Access</h4>
+                      <div className="space-y-1 text-xs mb-3">
+                        <div className="flex justify-between">
+                          <span className="text-neutral-dark">Card Holder</span>
+                          <span className="font-medium text-neutral-darker">{cardData.cardHolder}</span>
+                        </div>
+                        <div className="flex justify-between items-start">
+                          <span className="text-neutral-dark">Card Number</span>
+                          <span className="font-mono text-neutral-darker">{cardData.last4}</span>
+                        </div>
+                      </div>
+                      <button
+                        onClick={handleScrollToPayments}
+                        className="w-full bg-secondary hover:bg-secondary-dark text-white font-semibold py-2 px-3 rounded-lg transition duration-200 text-xs"
+                      >
+                        View Full Payment Details
+                      </button>
+                    </div>
+                  )}
+                  
+                  {/* Travel Notifications */}
+                  <div className="mb-4">
+                    <TravelNotificationsWidget
+                      travelNotifications={travelNotifications}
+                      formatDateRange={formatDateRange}
+                    />
+                  </div>
+                </div>
+                
+                {/* Column 2: Flexible content that wraps around the card */}
+                <div className="flex-1 min-w-0">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {/* Card Details - Full width on medium screens, half width on large screens */}
+                    <div className="lg:col-span-2">
+                      <CardDetailsWidget
+                        cardData={cardData}
+                        showSensitive={revealStatus} 
+                        copiedField={copiedField}
+                        toggleSensitive={toggleSensitive}
+                        handleCopyToClipboard={handleCopyToClipboard}
+                        formatCardNumber={formatCardNumber}
+                      />
+                    </div>
+                    
+                    {/* Payment Summary - Responsive column sizing */}
+                    <div className="lg:col-span-1">
+                      <PaymentSummaryWidget
+                        cardData={cardData}
+                        formatCurrency={formatCurrency}
+                        formatDate={formatDate}
+                      />
+                    </div>
+                    
+                    {/* Rewards Summary (if applicable) - Responsive column sizing */}
+                    {cardData.rewardsRate > 0 && (
+                      <div className="lg:col-span-1">
+                        <RewardsSummaryWidget
+                          cardData={cardData}
+                          formatCurrency={formatCurrency}
+                          formatDate={formatDate}
+                          setShowWithdrawModal={setShowWithdrawModal}
+                          showWithdrawalSuccess={showWithdrawalSuccess}
+                          totalRewardsEarned={totalRewardsEarned}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              
+              {/* Row 2: Full-width Transaction Dashboard */}
+              <div className="mb-6">
+                <div className="bg-white p-4 rounded-xl shadow-md border border-neutral-200">
+                  <TransactionDashboardWidget 
+                    cards={cards} 
+                    filterCardId={numericCardId}
+                  />
+                </div>
+              </div>
+            </>
           )}
           
-          {/* Transaction History & Charts (Dashboard Component) - Full row */}
-          <div className="mb-6">
-            <TransactionDashboardWidget cards={cards} filterCardId={numericCardId} />
-          </div>
-
-          {/* --- Travel Notifications Display Section (Replaced with Widget) --- */}
-          <div className="mb-6">
-            <TravelNotificationsWidget
-              travelNotifications={travelNotifications}
-              formatDateRange={formatDateRange}
-            />
-          </div>
-
           {/* Separator */}
-          <hr className="my-6 lg:my-8 border-neutral-light" />
+          <hr className="my-6 border-neutral-light" />
 
-          {/* Added Transaction List for this card (Replaced with Widget) */}
+          {/* Transaction List - Full width for both views */}
           <CardTransactionListWidget
             transactions={cardTransactions}
             rewardsRate={cardData?.rewardsRate}
           />
 
-          {/* --- Credit Card Payment Section (Conditional) --- */}
+          {/* Credit Card Payment Section - Full width for both views */}
           {cardData.accountType === 'Credit' && (
             <div ref={paymentSectionRef} className="bg-white p-4 md:p-6 lg:p-8 rounded-lg shadow-lg mt-6 md:mt-8 lg:mt-10 border border-neutral-200">
               {/* Heading Adjusted */}
