@@ -492,6 +492,15 @@ function CardDetailPage({ cards, setCards }) {
                   toggleSensitive={toggleSensitive}
                   handleCopyToClipboard={handleCopyToClipboard}
                   formatCardNumber={formatCardNumber}
+                  onReportLost={() => {
+                    setReportType('lost');
+                    setShowReportForm(true);
+                  }}
+                  onReportStolen={() => {
+                    setReportType('stolen');
+                    setShowReportForm(true);
+                  }}
+                  onAddToWallet={handleAddToWallet}
                 />
               </div>
               
@@ -583,6 +592,15 @@ function CardDetailPage({ cards, setCards }) {
                         toggleSensitive={toggleSensitive}
                         handleCopyToClipboard={handleCopyToClipboard}
                         formatCardNumber={formatCardNumber}
+                        onReportLost={() => {
+                          setReportType('lost');
+                          setShowReportForm(true);
+                        }}
+                        onReportStolen={() => {
+                          setReportType('stolen');
+                          setShowReportForm(true);
+                        }}
+                        onAddToWallet={handleAddToWallet}
                       />
                     </div>
                     

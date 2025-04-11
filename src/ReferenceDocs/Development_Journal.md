@@ -305,3 +305,26 @@ This journal tracks the development progress of the Card Management App prototyp
 3.  Ensured necessary icons (`ArrowDownTrayIcon`, `ClockIcon`) and `format` from `date-fns` were imported.
 
 ---
+
+## April 10, 2025 - Card Details Widget Fixes
+
+**USER Request:** Fix issues with the Card Details widget where card number wasn't revealing correctly, CVV started off visible, and expiry date wasn't revealing on click.
+
+**Cascade Action:**
+1. **Card Number Reveal Fix**:
+   * Updated the CardDetailsWidget component to use the correct `fullCardNumber` property instead of `cardNumber`
+   * Fixed the formatting to properly display the card number when revealed
+   * Ensured copy to clipboard functionality uses the full card number
+
+2. **CVV Hidden State Fix**:
+   * Modified the CSS class structure for the CVV span to ensure it always starts blurred
+   * Corrected the conditional rendering to properly toggle between hidden and revealed states
+   * Updated the className attribute to properly remove blur styling when revealed
+
+3. **Expiry Date Reveal Fix**:
+   * Found and fixed the root issue where the parent component (CardDetailPage.jsx) wasn't initializing the expiry field in the revealStatus state
+   * Updated the initial state to include `expiry: 'hidden'` in the revealStatus object
+   * Ensured the reset logic in useEffect also includes the expiry field
+   * Fixed the conditional CSS in the component to properly remove blur when revealed
+
+These fixes ensure that all three sensitive information fields (card number, CVV, and expiry date) correctly implement the 2FA verification flow, starting in a hidden state and only revealing after proper verification.

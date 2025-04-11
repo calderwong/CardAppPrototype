@@ -9,7 +9,10 @@ import {
   CheckIcon,
   ShieldCheckIcon,
   XMarkIcon,
-  FingerPrintIcon
+  FingerPrintIcon,
+  ExclamationTriangleIcon, // For Report
+  FlagIcon, // For Report
+  DevicePhoneMobileIcon, // For Digital Wallets
 } from '@heroicons/react/24/outline';
 import LabelValueDisplay from '../common/LabelValueDisplay';
 import { ViewModeContext } from '../../App';
@@ -20,7 +23,10 @@ const CardDetailsWidget = ({
   copiedField, 
   toggleSensitive, 
   handleCopyToClipboard, 
-  formatCardNumber 
+  formatCardNumber,
+  onReportLost,
+  onReportStolen,
+  onAddToWallet
 }) => {
   // Get view mode from context
   const viewMode = useContext(ViewModeContext);
@@ -157,7 +163,7 @@ const CardDetailsWidget = ({
       </div>
 
       {/* Sensitive Info */}
-      <div className="space-y-4 relative">
+      <div className="space-y-4 relative mb-6">
         {/* Card Number with blur/copy */}
         <div className="flex justify-between items-center relative">
           <div className="flex items-center">
@@ -270,6 +276,49 @@ const CardDetailsWidget = ({
           </div>
           {showSensitive.expiry === 'prompting' && renderVerificationModal('expiry')}
           {showSensitive.expiry === 'verifying' && renderVerifyingState('expiry')}
+        </div>
+      </div>
+
+      {/* Card Actions Section */}
+      <div className="pt-2 border-t border-neutral-100">
+        <h4 className="text-sm font-medium text-neutral-700 mb-3">Card Actions</h4>
+        
+        {/* Security Actions */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
+          <button
+            onClick={onReportLost}
+            className="flex items-center justify-center sm:justify-start px-3 py-2 text-xs font-medium text-neutral-700 bg-neutral-50 border border-neutral-200 rounded-md hover:bg-neutral-100 transition-colors"
+          >
+            <ExclamationTriangleIcon className="h-4 w-4 mr-1.5 text-yellow-500" />
+            Report Lost
+          </button>
+          
+          <button
+            onClick={onReportStolen}
+            className="flex items-center justify-center sm:justify-start px-3 py-2 text-xs font-medium text-neutral-700 bg-neutral-50 border border-neutral-200 rounded-md hover:bg-neutral-100 transition-colors"
+          >
+            <FlagIcon className="h-4 w-4 mr-1.5 text-red-500" />
+            Report Stolen
+          </button>
+        </div>
+        
+        {/* Digital Wallet Actions */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <button
+            onClick={() => onAddToWallet('Apple Pay')}
+            className="flex items-center justify-center sm:justify-start px-3 py-2 text-xs font-medium text-neutral-700 bg-neutral-50 border border-neutral-200 rounded-md hover:bg-neutral-100 transition-colors"
+          >
+            <DevicePhoneMobileIcon className="h-4 w-4 mr-1.5 text-black" />
+            Add to Apple Pay
+          </button>
+          
+          <button
+            onClick={() => onAddToWallet('Google Pay')}
+            className="flex items-center justify-center sm:justify-start px-3 py-2 text-xs font-medium text-neutral-700 bg-neutral-50 border border-neutral-200 rounded-md hover:bg-neutral-100 transition-colors"
+          >
+            <DevicePhoneMobileIcon className="h-4 w-4 mr-1.5 text-blue-500" />
+            Add to Google Pay
+          </button>
         </div>
       </div>
     </div>
