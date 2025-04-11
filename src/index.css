@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Add any global base styles here if needed */
+body {
+  @apply font-sans antialiased text-neutral-darker bg-white;
+}
+
+/* Custom Card Gradients */
+.gradient-blue {
+  background-image: linear-gradient(to bottom right, #3b82f6, #1d4ed8); /* Blue gradient */
+}
+.gradient-purple {
+  background-image: linear-gradient(to bottom right, #a855f7, #7e22ce); /* Purple gradient */
+}
+.gradient-green {
+  background-image: linear-gradient(to bottom right, #22c55e, #15803d); /* Green gradient */
+}

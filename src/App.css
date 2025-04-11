@@ -1,0 +1,37 @@
+/* Add any component-specific styles for App.jsx here */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
+body {
+  font-family: 'Inter', sans-serif; /* Example: Using a common sans-serif font */
+}
+
+/* Basic fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Custom Toggle Switch Animation Styles */
+.toggle-checkbox:checked {
+  /* Move the knob to the right */
+  transform: translateX(100%);
+  /* Optional: Change border color when checked, matches focus ring */
+  border-color: #005A99; /* Tailwind primary color */
+}
+
+.toggle-checkbox {
+  /* Ensure the knob starts at the left */
+  transform: translateX(0);
+  /* Tailwind handles the transition-transform duration-200 ease-in-out */
+}
+
+/* Style the background label if needed, Tailwind classes handle this mostly */
+/* .toggle-label { ... } */
