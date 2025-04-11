@@ -338,14 +338,14 @@ function Dashboard({ cards, filterCardId = null }) {
         <div className={`${isMobile ? 'col-span-1' : 'lg:col-span-2'} bg-white p-4 lg:p-6 rounded-2xl shadow-md`}>
           <h3 className="text-lg font-semibold text-neutral-darker mb-1">Budget Breakdown</h3>
           <p className="text-sm text-neutral-dark mb-4">Total Spent ({timeframeLabel(timeframe)}): {formatCurrency(totalSpendingForPeriod)}</p>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
+          <ResponsiveContainer width="100%" height={isMobile ? 300 : 360}>
+            <PieChart margin={{ top: 20, right: 10, bottom: 10, left: 10 }}>
               <Pie
                 data={budgetDataForPeriod}
                 cx="50%"
-                cy="50%"
+                cy={isMobile ? "50%" : "45%"}
                 labelLine={false}
-                outerRadius={80}
+                outerRadius={isMobile ? 80 : 90}
                 fill="#8884d8"
                 dataKey="value"
                 onClick={(data) => setSelectedBudgetCategory(data.name)} // Set category on click
@@ -358,7 +358,7 @@ function Dashboard({ cards, filterCardId = null }) {
                  <LabelList
                     dataKey="name"
                     position="outside"
-                    offset={15}
+                    offset={12}
                     formatter={(value) => value} // Display category name
                     className="text-xs fill-neutral-dark"
                   />
