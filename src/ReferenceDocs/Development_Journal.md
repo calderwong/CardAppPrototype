@@ -266,7 +266,7 @@ This journal tracks the development progress of the Card Management App prototyp
    * Updated `TransactionList` to handle and appropriately display new status types
    * Added color coding and icons specific to each transaction status
    * Updated `TransactionDetailPage` to show status-specific information panels
-   * Added conditional action buttons based on transaction status (e.g., "Contact Support" for declined transactions)
+   * Added contextual action buttons based on transaction status (e.g., "Contact Support" for declined transactions)
    * Added special formatting for refunded transactions
 
 **Outcome:** The transaction viewing feature now provides a comprehensive user experience with detailed transaction information, appropriate status indicators, and a fully responsive design that works well on both mobile and desktop views. The mock data now includes edge cases and various transaction types to better demonstrate all app functionality.
@@ -373,3 +373,78 @@ These fixes ensure that all three sensitive information fields (card number, CVV
      * Stolen card reports include the ability to dispute recent transactions
 
 This implementation successfully integrates these important security and convenience features back into the application while maintaining the updated design language.
+
+---
+
+**USER Request (Step 994 & 998):** Implement the withdrawal logic and display the withdrawal history.
+
+**Cascade Action (Steps 996-1000):**
+1.  Updated `handleWithdrawConfirm` in `CardDetailPage.jsx`:
+    *   Added guard clauses for `cardData`, `rewardsBalance > 0`, and `selectedWithdrawalAccount`.
+    *   Fetched `withdrawalAmount` and `destinationAccount` details.
+    *   Created a `newHistoryEntry` object (ID, amount, ISO date, destination string).
+    *   Called `setCards` prop to update the global state: maps over `prevCards`, finds the target card, returns a new card object with `rewardsBalance: 0` and the `newHistoryEntry` added to `rewardsWithdrawalHistory`.
+2.  Added a 'Withdrawal History' section within the 'Rewards Summary' in `CardDetailPage.jsx`:
+    *   Conditionally checks if `cardData.rewardsWithdrawalHistory` has entries.
+    *   If yes, maps over the history (sorted newest first) to render a list (`ul`) of withdrawals.
+    *   Each item (`li`) displays an `ArrowDownTrayIcon`, formatted amount, destination, and formatted date (`MMM d, yyyy`).
+    *   Added `max-h-40 overflow-y-auto` for scrollability.
+    *   If no history, displays 'No withdrawal history yet.'
+3.  Ensured necessary icons (`ArrowDownTrayIcon`, `ClockIcon`) and `format` from `date-fns` were imported.
+
+---
+
+## April 10, 2025 - Enhanced Report Lost/Stolen and Digital Wallet Features
+
+**USER Request:** After resurrecting the Report Lost/Stolen and Digital Wallet features, enhance them with sophisticated UI and realistic workflows.
+
+**Cascade Action:**
+
+### 1. Enhanced Report Lost/Stolen Feature
+Created a multi-step, comprehensive reporting process with the following improvements:
+
+1. **Multi-step Wizard Flow**:
+   * Step 1: Basic incident details with card-style selection between Lost/Stolen
+   * Step 2: Type-specific information collection (disputed transactions for stolen cards, additional notes for lost cards)
+   * Step 3: Replacement card shipping details and final confirmation
+   * Added progress indicators showing completion status of each step
+
+2. **Expanded Data Collection**:
+   * Added date picker for last transaction date
+   * Added location field for last card usage
+   * Implemented contact preference selection (email, phone, text)
+   * Added shipping address customization with billing address fallback option
+   * Enhanced dispute transaction UI with sortable table format
+   * Added additional details field for lost card circumstances
+
+3. **Enhanced UI Components**:
+   * Improved form controls with proper validation and error states
+   * Added loading state during form submission
+   * Implemented report summary with all collected information
+   * Added appropriate iconography throughout the process
+   * Implemented responsive design for all form elements
+
+### 2. Enhanced Digital Wallet Integration
+Created a new `WalletIntegrationModal` component simulating a realistic wallet integration experience:
+
+1. **Multi-stage Process Visualization**:
+   * Initial information screen with security details
+   * Verification stage with animated progress tracking
+   * Scanning/connecting stage with simulated device connection
+   * Success/failure states with appropriate feedback
+   * Brand-specific styling (black for Apple Pay, blue for Google Pay)
+
+2. **Interactive Elements**:
+   * Animated progress bars showing real-time status
+   * QR code visualization with scanning animation effects
+   * Visual card representation in success state
+   * Comprehensive error handling with recovery suggestions
+   * Loading and transition animations between stages
+
+3. **Integration with App State**:
+   * Added state tracking for wallet integration status
+   * Implemented success callback to update application state
+   * Created transaction history for wallet integration events
+   * Added proper logging for debugging and user notifications
+
+Both enhancements provide a significantly more realistic and professional user experience, closely mirroring what users would expect from a production banking application while following modern UX best practices for financial interfaces.

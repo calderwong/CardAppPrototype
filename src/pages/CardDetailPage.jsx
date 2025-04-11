@@ -165,6 +165,21 @@ function CardDetailPage({ cards, setCards }) {
     setShowWithdrawalSuccess(false);
   }, [cardData, numericCardId]);
 
+  // --- Loading / Not Found State ---
+  if (!cardData) {
+    return (
+      <div className="container mx-auto p-4 text-center">
+         <Link to="/" className="text-primary hover:underline inline-flex items-center mb-4">
+           <ArrowLeftIcon className="h-5 w-5 mr-1" />
+           Back to Dashboard
+         </Link>
+        <p className="text-lg text-neutral-dark">
+          {isNaN(numericCardId) ? 'Invalid Card ID.' : 'Loading card details or card not found...'}
+        </p>
+      </div>
+    );
+  }
+
   const handleDisputeChange = (txId) => {
     setDisputedTransactions(prev => ({
       ...prev,
