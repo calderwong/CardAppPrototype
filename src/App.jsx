@@ -18,6 +18,14 @@ const GitHubLogo = () => (
   </svg>
 );
 
+// Banana Icon SVG Component
+const BananaIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24" height="24">
+    <path d="M390.41,74.25C382.65,25.73,333.68-2.47,283.55,16.9,245.12,24.67,213.27,52.44,195.3,87.62c-38.4-28.08-94.83-3-95.67,45.82,0,.89,0,1.8,0,2.77-18.6,18.14-32,44.47-35.41,78.05-1.06,10.54-.93,20.19,0,29.32-40,44.79-58.93,97.07-58.07,149.46.67,41.76,25.44,79.13,66.19,79.13,8.27,0,17-.93,26.11-3,.53,3.86,6.67,14.4,30.31,23.07,29.71,10.94,73.64,7.47,109.6-26.53,11.07-10.4,21.2-22.54,30.13-36.54,22.08-6.13,75.09-29.19,127.82-85.55,37.07-39.47,36.81-69.31,29.32-85.55C449,228.9,406.41,176.19,390.41,74.25Zm40,174.57c5.6,12,5.33,36.14-27.47,71-46.67,50-95.14,73.46-118.42,81a8,8,0,0,0-4.46,3.68c-8.27,13.54-17.86,26-28.26,36-29.71,28-66.19,32.54-91.1,23.2-10.27-3.86-18.8-9.73-19.47-12.8a8.13,8.13,0,0,0-6.66-6c-11.47,2.53-21.61,3.6-30.28,3.6-32.54,0-52-31.07-52.54-63.48-1.06-65.75,28.93-121.24,56.4-152.45a8.14,8.14,0,0,0,2.13-6.93,128.78,128.78,0,0,1-.8-26c3.06-30.94,15.87-54.94,33.33-71.55a8.08,8.08,0,0,0,2.53-6c-.13-.93-.13-1.8-.13-2.54.66-35.2,41.2-53,69.12-28.4a8,8,0,0,0,11.47-1.33c15.33-34.27,45-62.24,79.76-68.64,42.15-16.27,82.55,7.74,89.22,48.8C412.41,159.18,437.48,227.95,430.41,248.82Z" fill="#FFD700"/>
+    <path d="M357.6,217.75c-11.22,0-33.11-18.14-48-32.28C289.21,166.38,271.3,150,255.57,150a8,8,0,0,0,0,16c10.34,0,26.66,15.34,45.14,32.94C316.24,213.63,340.38,233.76,357.6,233.75a8,8,0,0,0,0-16Z" fill="#FFD700"/>
+  </svg>
+);
+
 // Create a context for view mode
 export const ViewModeContext = createContext('browser');
 
@@ -149,9 +157,23 @@ function App() {
             </main>
           )}
 
-          {/* Basic Footer Placeholder - Softer corners */}
-          <footer className="bg-neutral-medium text-center p-2 text-sm text-neutral-dark mt-8 rounded-t-lg shadow-inner">
-            2025 Card Management Prototype
+          {/* Footer with Banana Icon and Speech Bubble */}
+          <footer className="bg-neutral-medium p-4 text-center text-sm text-neutral-dark mt-8 rounded-t-lg shadow-inner relative">
+            <div className="mb-5 flex justify-center items-start">
+              <div className="relative flex items-start">
+                <div className="mr-2 mt-1">
+                  <BananaIcon />
+                </div>
+                <div className="relative max-w-xs bg-white p-3 rounded-xl shadow-md">
+                  <div className="absolute left-[-10px] top-[10px] w-0 h-0 border-t-[8px] border-r-[12px] border-b-[8px] border-transparent border-r-white"></div>
+                  <p className="text-sm text-left font-medium">
+                    "You gotta' be kidding me, WHO is going to pay $1M/yr for this? No idea, Harry, but you got a ways to go before you're a wizard like me ;)"
+                  </p>
+                  <p className="text-xs text-gray-500 text-right mt-1 italic">*inside_joke</p>
+                </div>
+              </div>
+            </div>
+            <div>2025 Card Management Prototype</div>
           </footer>
         </div>
       </ViewModeContext.Provider>
