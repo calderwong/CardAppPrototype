@@ -5,8 +5,8 @@ import {
   FlagIcon,
   XMarkIcon,
   CheckCircleIcon,
-  ArrowSmallRightIcon,
-  ArrowSmallLeftIcon,
+  ArrowRightIcon,
+  ArrowLeftIcon,
   ShieldCheckIcon,
   CreditCardIcon,
   ClockIcon,
@@ -518,7 +518,7 @@ function ReportForm({
                 onClick={prevStep}
                 className="px-4 py-2 text-sm font-medium text-neutral-700 bg-neutral-100 rounded-md hover:bg-neutral-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500 flex items-center"
               >
-                <ArrowSmallLeftIcon className="h-4 w-4 mr-1" />
+                <ArrowLeftIcon className="h-4 w-4 mr-1" />
                 Back
               </button>
             ) : (
@@ -538,7 +538,7 @@ function ReportForm({
                 className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary flex items-center"
               >
                 Continue
-                <ArrowSmallRightIcon className="h-4 w-4 ml-1" />
+                <ArrowRightIcon className="h-4 w-4 ml-1" />
               </button>
             ) : (
               <button

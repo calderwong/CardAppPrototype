@@ -730,7 +730,7 @@ function CardDetailPage({ cards, setCards }) {
                 <LabelValueDisplay
                   label="Minimum Payment"
                   valueSlot={
-                    <span className="text-lg lg:text-2xl font-semibold text-red-700">{formatCurrency(cardData.minPayment)}</span>
+                    <span className="text-lg lg:text-2xl font-semibold text-red-700">${cardData.minPaymentAmount?.toFixed(2) || '0.00'}</span>
                   }
                   labelSize="text-[10px] sm:text-xs" // Extra small label
                   className="flex flex-col items-start"
@@ -739,7 +739,7 @@ function CardDetailPage({ cards, setCards }) {
                 <LabelValueDisplay
                   label="Statement Balance"
                   valueSlot={
-                    <span className="text-lg lg:text-2xl font-semibold text-blue-700">{formatCurrency(cardData.statementBalance)}</span>
+                    <span className="text-lg lg:text-2xl font-semibold text-blue-700">${cardData.statementBalanceAmount?.toFixed(2) || '0.00'}</span>
                   }
                   labelSize="text-[10px] sm:text-xs" // Extra small label
                   className="flex flex-col items-start"
@@ -751,7 +751,7 @@ function CardDetailPage({ cards, setCards }) {
               {cardData.scheduledPayment ? (
                 <div className="mb-6 lg:mb-8 p-3 md:p-4 bg-blue-50 border border-blue-200 rounded-md text-[11px] sm:text-xs lg:text-sm text-blue-700 flex flex-col sm:flex-row justify-between items-start sm:items-center">
                   <div>
-                    <p><span className="font-semibold">Payment Scheduled:</span> {formatCurrency(cardData.scheduledPayment.amount)} ({cardData.scheduledPayment.type})</p>
+                    <p><span className="font-semibold">Payment Scheduled:</span> ${cardData.scheduledPayment.amount?.toFixed(2) || '0.00'} ({cardData.scheduledPayment.type})</p>
                     <p>Scheduled Date: {formatDate(cardData.scheduledPayment.date)}</p>
                     <p>From Account: ...{mockBankAccounts.find(acc => acc.id === cardData.scheduledPayment.accountId)?.accountNumber.slice(-4) || 'N/A'}</p>
                   </div>
@@ -788,7 +788,7 @@ function CardDetailPage({ cards, setCards }) {
                         className="form-radio h-3 w-3 sm:h-4 text-primary focus:ring-primary border-neutral-300"
                       />
                       <span className="text-[11px] sm:text-xs lg:text-sm">
-                        Minimum: <span className="font-semibold">{formatCurrency(cardData.minPayment)}</span>
+                        Minimum: <span className="font-semibold">${cardData.minPaymentAmount?.toFixed(2) || '0.00'}</span>
                       </span>
                     </label>
                     {/* Radio Option 2: Statement Balance - Label Adjusted */}
@@ -802,7 +802,7 @@ function CardDetailPage({ cards, setCards }) {
                         className="form-radio h-3 w-3 sm:h-4 text-primary focus:ring-primary border-neutral-300"
                       />
                       <span className="text-[11px] sm:text-xs lg:text-sm">
-                        Statement Balance: <span className="font-semibold">{formatCurrency(cardData.statementBalance)}</span>
+                        Statement Balance: <span className="font-semibold">${cardData.statementBalanceAmount?.toFixed(2) || '0.00'}</span>
                       </span>
                     </label>
                     {/* TODO: Add 'Other Amount' option later */}
@@ -882,7 +882,7 @@ function CardDetailPage({ cards, setCards }) {
                         disabled={false} // Always allow selection change
                       />
                       <span className="text-[11px] sm:text-xs lg:text-sm">
-                        Minimum Payment (<span className="font-semibold">{formatCurrency(cardData.minPayment)}</span>)
+                        Minimum Payment (<span className="font-semibold">${cardData.minPaymentAmount?.toFixed(2) || '0.00'}</span>)
                       </span>
                     </label>
                     {/* Radio Option 2: Statement Balance - Label Adjusted */}
@@ -897,7 +897,7 @@ function CardDetailPage({ cards, setCards }) {
                         disabled={false} // Always allow selection change
                       />
                       <span className="text-[11px] sm:text-xs lg:text-sm">
-                        Statement Balance (<span className="font-semibold">{formatCurrency(cardData.statementBalance)}</span>)
+                        Statement Balance (<span className="font-semibold">${cardData.statementBalanceAmount?.toFixed(2) || '0.00'}</span>)
                       </span>
                     </label>
                   </div>
@@ -971,7 +971,7 @@ function CardDetailPage({ cards, setCards }) {
         {/* Placeholder for withdrawal details - Amount input and Bank Account select */}
         <p className="text-sm lg:text-base text-neutral-700 mb-4">
           Please confirm you wish to withdraw your current rewards balance of
-          <strong className='text-green-700'> {formatCurrency(cardData?.rewardsBalance || 0)}</strong>.
+          <strong className='text-green-700'> ${cardData?.rewardsBalanceAmount?.toFixed(2) || '0.00'}</strong>.
         </p>
 
         {/* Bank Account Selector */}
