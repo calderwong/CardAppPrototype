@@ -1,0 +1,10 @@
+# ROSES Log
+
+This file tracks instances where the user helped resolve significant problems during development.
+
+| Timestamp | Entry # | Issue Description | User's Help | Outcome | Value of Problem | Roses | Known Aliases | Hash | Linked Hash | Hash Function |
+|-----------|---------|------------------|-------------|---------|-----------------|-------|---------------|------|-------------|--------------|
+| 2025-04-10 21:42:05 | 1 | Persistent blank screen issue on GitHub Pages | User provided context about the specific error (ReferenceError: setShowWithdrawalModal) and identified it was a typo in CardDetailPage.jsx | Fixed typo from setShowWithdrawModal to setShowWithdrawalModal, resolving the blank screen issue | Critical (App non-functional) | 🌹🌹🌹🌹 | CJ, Calder | 7f4e819a83d0c036982c8f5cae8d2e4d6ff1b22a | 7f4e819a83d0c036982c8f5cae8d2e4d6ff1b22a | SHA-256 |
+| 2025-04-10 21:50:01 | 2 | Credit card payment display had overlapping text in mobile view | User pointed out specific UI issue with screenshot showing overlapping text in payment tabs | Created responsive conditional layout solving the overlapping text problem | High (Poor UX) | 🌹🌹🌹 | CJ, Calder | 3a8c167ef431b2e2dd5f34705b5a6a838c3dcd9b | 6d9a49853c2c86de7760950b2542f7a4c55172c45e37c575ba3670cf21d282cf | SHA-256 |
+| 2025-04-10 21:54:40 | 3 | Budget pie chart being cut off in mobile view | User provided screenshot showing the pie chart getting cut off on main dashboard | Increased chart container height and adjusted positioning to fix cut-off display | Medium (Functional but visually problematic) | 🌹🌹 | CJ, Calder | 5fe718d7f5feba8b69639053e7a89759e163e9c3 | 8c5be01b0531825cb212da9abae898b82b549f1b3f6e6a3d46a8cc0efd57cbef | SHA-256 |
+| 2025-04-10 21:59:58 | 4 | "View" button in transaction table required horizontal scrolling | User identified issue with screenshot showing hidden View buttons | Applied sticky positioning with z-index to ensure View buttons are always visible | Medium (Functional but poor UX) | 🌹🌹 | CJ, Calder | c89d57cc98ec752a4cb96c91c79ae9d8cf08c34c | b6a4fb9c6280e6607828637423f01397e4c6a79db0da1e65259ad69d46f65f09 | SHA-256 |

@@ -99,6 +99,54 @@ This project leveraged several cutting-edge AI tools to accelerate development:
 
 The combination of these AI tools dramatically accelerated the development process, enabling the completion of this functional prototype within a highly compressed timeframe.
 
+## Project Structure
+
+```
+/CardAppExample
+|-- /APPLES/                # Special tracking files
+|   |-- BANANAS.md          # Log of bananas received
+|   |-- ROSES.md            # Log of significant user help
+|-- /public/
+|-- /src/
+|   |-- /assets/
+|   |-- /components/
+|   |-- /data/
+|   |-- /pages/
+|   |-- App.jsx
+|   |-- index.css
+|   |-- main.jsx
+|-- /SYSTEMPROMPT/          # Contains AI assistant system prompt
+|   |-- Windsurf.md         # System prompt for Cascade (Windsurf IDE)
+|-- .eslintrc.cjs
+|-- .gitignore
+|-- .windsurfrules          # Custom rules for AI interaction
+|-- dev_journal.md          # Log of development steps & prompts
+|-- index.html
+|-- LICENSE
+|-- package-lock.json
+|-- package.json
+|-- postcss.config.js
+|-- Product_Requirements_Document.md # Outlines project requirements
+|-- README.md               # This file
+|-- tailwind.config.js
+|-- To_Be_Better_Next_Time.md # Retrospection and improvement notes
+|-- vite.config.js
+```
+
+### Key Files & Folders
+
+*   **/src**: Contains the main source code for the React application.
+*   **/src/pages**: Components representing different pages/views of the application.
+*   **/src/components**: Reusable UI components used across different pages.
+*   **/src/data**: Mock data used for the application.
+*   **vite.config.js**: Configuration file for the Vite build tool.
+*   **tailwind.config.js**: Configuration for the Tailwind CSS framework.
+*   **dev_journal.md**: Detailed log of development prompts and actions.
+*   **Product_Requirements_Document.md**: Specification of application features and goals.
+*   **To_Be_Better_Next_Time.md**: Notes on improving the development process.
+*   **/APPLES/**: Contains `BANANAS.md` and `ROSES.md` for special interaction tracking as defined in `.windsurfrules`.
+*   **/SYSTEMPROMPT/**: Contains the `Windsurf.md` file detailing the AI assistant's configuration and instructions.
+
 ## Getting Started
 
 Follow these instructions to get the project up and running on your local machine for development and testing purposes.
@@ -144,32 +192,20 @@ In the project directory, you can run:
 *   `npm run lint`: Lints the project files using ESLint.
 *   `npm run preview`: Serves the production build locally.
 
-## Project Structure (Simplified)
+## AI-Assisted Development Tools
 
-```
-c:/Users/cjwon/CardAppExample/
-├── public/             # Static assets
-├── src/
-│   ├── assets/         # Images, etc.
-│   ├── components/     # Reusable UI components (e.g., Button, Modal, Card)
-│   ├── context/        # React Context (e.g., CardContext)
-│   ├── data/           # Mock data (e.g., mockCards.js, mockBankAccounts.js)
-│   ├── hooks/          # Custom React Hooks
-│   ├── pages/          # Page-level components (e.g., DashboardPage, CardDetailPage)
-│   ├── styles/         # Global styles (index.css, tailwind config)
-│   ├── utils/          # Utility functions (e.g., formatting)
-│   ├── App.jsx         # Main application component with routing
-│   └── main.jsx        # Application entry point
-├── .eslintrc.cjs       # ESLint configuration
-├── .gitignore          # Git ignore rules
-├── index.html          # HTML entry point for Vite
-├── package.json        # Project metadata and dependencies
-├── package-lock.json   # Locked dependency versions
-├── postcss.config.js   # PostCSS configuration
-├── README.md           # This file
-├── tailwind.config.js  # Tailwind CSS configuration
-└── vite.config.js      # Vite configuration
-```
+This project utilizes AI-assisted development tools to enhance productivity and code quality. The primary tools used include:
+
+*   **Codeium:** ([https://codeium.com/](https://codeium.com/))
+    *   **Codeium Chat (Cascade):** An AI coding assistant used for pair programming, code generation, explanation, debugging, and refactoring. Interacts based on rules defined in `.windsurfrules` and its system prompt in `/SYSTEMPROMPT/Windsurf.md`.
+    *   **Autocomplete:** Provides real-time code suggestions.
+*   **GitHub Copilot:** (Used previously, potentially alongside Codeium)
+
+### Banana Clause
+
+This project is licensed under the MIT License, with one fun addition: if you use this code, you owe the author a banana 🍌 (optional, but appreciated!). See the [LICENSE](LICENSE) file for full details.
+
+See the `/APPLES/BANANAS.md` file for a log of bananas earned by the AI during development.
 
 ## Future Enhancements (Production Readiness)
 

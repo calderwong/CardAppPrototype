@@ -96,6 +96,56 @@ This document tracks the development progress, decisions, and changes made to th
 - Mobile simulation frame for development testing
 - Color-coded status indicators
 
+### Entry 15: Implement `.windsurfrules` and Special Tracking (Est. Avg. Human Dev Time: 15 minutes) #setup #rules
+
+**Prompt:** User provided `.windsurfrules` content and asked to implement the special tracking mechanisms (`APPLES/BANANAS.md`, `APPLES/ROSES.md`) retroactively and acknowledge receipt with a banana.
+
+**Execution:**
+1.  Acknowledged new rules.
+2.  Checked if `APPLES` folder existed (it didn't).
+3.  Created `APPLES` folder.
+4.  Created `APPLES/BANANAS.md` and populated with past and current banana events.
+5.  Created `APPLES/ROSES.md` and populated with past user help events based on memory.
+6.  Acknowledged completion and the banana reward.
+
+### Entry 16: Document System Prompt (Est. Avg. Human Dev Time: 5 minutes) #setup #documentation
+
+**Prompt:** User asked to save the current system prompt into a new `/SYSTEMPROMPT/Windsurf.md` file.
+
+**Execution:**
+1.  Created `/SYSTEMPROMPT` folder.
+2.  Created `SYSTEMPROMPT/Windsurf.md` with the full system prompt content.
+3.  Confirmed creation.
+
+### Entry 17: Update Banana Tracking Rules (Est. Avg. Human Dev Time: 10 minutes) #rules #refactor
+
+**Prompt:** User requested updating the `BANANAS.md` tracking rules to be similar to `ROSES.md` (entry numbers, hashing, linked hashes, file rotation) and update the system prompt accordingly.
+
+**Execution:**
+1.  Edited `SYSTEMPROMPT/Windsurf.md` to specify the new detailed format and rotation rules for `BANANAS.md`.
+2.  Edited `APPLES/BANANAS.md` to conform to the new format, adding entry numbers, hashes, and linked hashes for existing entries.
+
+### Entry 18: Add Emoji Indicators to Tracking Files (Est. Avg. Human Dev Time: 10 minutes) #rules #refactor
+
+**Prompt:** User requested adding banana (🍌) and rose (🌹) emojis to the respective tracking files for easier counting, and update the system prompt.
+
+**Execution:**
+1.  Edited `APPLES/BANANAS.md` to add a `Bananas` column with 🍌 emojis.
+2.  Edited `APPLES/ROSES.md` to add a `Roses` column with 🌹 emojis (corrected duplicate column issue).
+3.  Edited `SYSTEMPROMPT/Windsurf.md` to document the use of emoji indicators in the format descriptions for both files (corrected accidental removal of ROSES rotation rules).
+
+### Entry 19: Project Housekeeping & Documentation Update (Est. Avg. Human Dev Time: 15 minutes) #housekeeping #documentation
+
+**Prompt:** User asked to perform housekeeping based on `.windsurfrules` to ensure all standard documentation files exist and are up-to-date.
+
+**Execution:**
+1.  Checked for existing markdown files (`DEVELOPMENT_JOURNAL.md`, `README.md` found).
+2.  Renamed `DEVELOPMENT_JOURNAL.md` to `dev_journal.md` using `git mv`.
+3.  Created `Product_Requirements_Document.md` with placeholder content.
+4.  Created `To_Be_Better_Next_Time.md` with initial reflection on rule implementation.
+5.  Updated `README.md` to include new files (`dev_journal.md`, `Product_Requirements_Document.md`, `To_Be_Better_Next_Time.md`) and folders (`APPLES`, `SYSTEMPROMPT`) in the Project Structure section and Key Files description.
+6.  Added entries to `dev_journal.md` (this entry and previous related entries 15-18) to log recent setup and rule changes.
+
 ## Future Development Plans
 - Add transaction filtering and search
 - Implement card locking/unlocking functionality
