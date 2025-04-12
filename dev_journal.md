@@ -146,6 +146,20 @@ This document tracks the development progress, decisions, and changes made to th
 5.  Updated `README.md` to include new files (`dev_journal.md`, `Product_Requirements_Document.md`, `To_Be_Better_Next_Time.md`) and folders (`APPLES`, `SYSTEMPROMPT`) in the Project Structure section and Key Files description.
 6.  Added entries to `dev_journal.md` (this entry and previous related entries 15-18) to log recent setup and rule changes.
 
+### Entry 20: Security Vulnerability Fix (Est. Avg. Human Dev Time: 15 minutes) #security #fix
+
+**Prompt:** User noticed a GitHub Dependabot alert for a moderate severity vulnerability in esbuild and requested investigation and resolution.
+
+**Execution:**
+1.  Analyzed the GitHub security alert for CVE-2023-36764 in esbuild (versions <=0.24.2).
+2.  Identified that the vulnerability allows any website to send requests to the development server and read the response.
+3.  Installed the latest version of esbuild (0.25.2) directly as a dev dependency.
+4.  Added a package.json `overrides` section to ensure all dependencies (including Vite) use the secure version.
+5.  Verified fix with `npm install` and `npm audit` showing 0 vulnerabilities.
+6.  Committed the security fix with a detailed commit message.
+7.  Received 3 bananas 🍌🍌🍌 for fixing the vulnerability in a "straight shot".
+8.  Updated BANANAS.md with the new entry and 3 banana emojis.
+
 ## Future Development Plans
 - Add transaction filtering and search
 - Implement card locking/unlocking functionality
